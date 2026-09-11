@@ -131,6 +131,7 @@ async function optionalRows<T>(request: PromiseLike<{ data: T[] | null, error: {
 }
 
 async function loadSupabaseData(client: SupabaseClient): Promise<DashboardSnapshot> {
+  const publicRunColumns = 'id,run_key,parent_run_id,run_type,period_type,period_key,period_start,scheduled_for,started_at,completed_at,status,total_targets,ok_count,oos_count,error_count,change_count,review_count,source,created_at'
   const [weeklyEffective, dailyEffective, pendingEffective, health, runs, products, retailers, productLinks, priceOverrides, corrections] = await Promise.all([
     pagedRows<EffectivePriceRow>((from, to) => client
       .from('weekly_price_history').select('*').order('period_start', { ascending: true }).range(from, to)),
@@ -140,7 +141,7 @@ async function loadSupabaseData(client: SupabaseClient): Promise<DashboardSnapsh
     }),
     rowsOrThrow<EffectivePriceRow>(client.from('pending_price_reviews').select('*').order('observed_at', { ascending: false }).limit(500)),
     rowsOrThrow<HealthCheck>(client.from('price_platform_health').select('*')),
-    rowsOrThrow<CrawlRun>(client.from('crawl_runs').select('*').order('created_at', { ascending: false }).limit(200)),
+    rowsOrThrow<CrawlRun>(client.from('crawl_runs').select(publicRunColumns).order('created_at', { ascending: false }).limit(200)),
     rowsOrThrow<ProductConfig>(client.from('products').select('id,name,category,capacity,active').order('name')),
     rowsOrThrow<RetailerConfig>(client.from('retailers').select('id,code,name,active').order('name')),
     optionalRows<ProductLinkConfig>(client.from('product_links').select('id,product_id,retailer_id,url,active').order('created_at')),

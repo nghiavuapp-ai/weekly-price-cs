@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 import type { EffectivePriceRow } from '../domain/price-data'
 import { loadDashboardData, type DashboardFixture } from './data-source'
@@ -32,5 +33,31 @@ describe('dashboard data source', () => {
     expect(snapshot.dailyRows.at(-1)).toMatchObject({ id: 'daily-ok', date: '2026-09-11', stale: true })
     expect(snapshot.pendingRows.map((item) => item.id)).toEqual(['daily-failed'])
     expect(snapshot.health[0].healthy).toBe(false)
+  })
+
+  it('loads Supabase data using only public crawl-run columns', async () => {
+    class Query implements PromiseLike<{ data: unknown[], error: { message: string } | null }> {
+      columns = ''
+      constructor(readonly table: string) {}
+      select(columns: string) { this.columns = columns; return this }
+      eq() { return this }
+      order() { return this }
+      limit() { return this }
+      range() { return this }
+      then<TResult1 = { data: unknown[], error: { message: string } | null }, TResult2 = never>(
+        onfulfilled?: ((value: { data: unknown[], error: { message: string } | null }) => TResult1 | PromiseLike<TResult1>) | null,
+        onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null,
+      ): PromiseLike<TResult1 | TResult2> {
+        const forbidden = this.table === 'crawl_runs' && this.columns === '*'
+        return Promise.resolve({ data: [], error: forbidden ? { message: 'permission denied for column updated_at' } : null }).then(onfulfilled, onrejected)
+      }
+    }
+    const client = { from: (table: string) => new Query(table) } as unknown as SupabaseClient
+
+    const snapshot = await loadDashboardData(client, {
+      generatedAt: '', effectiveRows: [], health: [], runs: [], products: [], retailers: [], productLinks: [], priceOverrides: [],
+    })
+
+    expect(snapshot.source).toBe('supabase')
   })
 })
