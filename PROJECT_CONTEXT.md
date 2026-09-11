@@ -7,7 +7,8 @@
 - **confirmed:** Thư mục dự án là `/Users/vutrungnghia/Downloads/Codex Projects/Price Check`.
 - **confirmed:** Bộ context này dùng chung cho Codex và Claude.
 - **confirmed:** Dashboard phục vụ hai cấp xem giá: tổng quan toàn bộ model và chi tiết một model.
-- **confirmed:** Dashboard cloud React/Vite đã được triển khai ở mức mã nguồn và local preview; chưa provision Supabase/GitHub/Vercel production trong trạng thái kiểm định này.
+- **confirmed:** Dashboard cloud React/Vite đã được deploy production tại `https://weekly-price-cs.vercel.app`; hiện đang dùng fixture lịch sử cho đến khi Supabase được provision.
+- **confirmed:** Source đã được đẩy lên public repository `https://github.com/nghiavuapp-ai/weekly-price-cs`.
 
 ## Phạm vi
 

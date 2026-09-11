@@ -6,10 +6,11 @@
 - **confirmed:** Đã triển khai mã, test và workbook cho Price Check Daily.
 - **confirmed:** Đã tích hợp Weekly/Daily vào dashboard nguồn và tạo local preview đã qua test tự động cùng kiểm tra trình duyệt desktop.
 - **confirmed:** Đã thêm schema Supabase/RLS/Realtime, importer lịch sử, cloud crawler, React admin dashboard và cấu hình GitHub Actions/Supabase Cron/Vercel ở mức mã nguồn.
+- **confirmed:** Public GitHub repo và Vercel production đã hoạt động; production hiện hiển thị fixture lịch sử vì Supabase chưa được kết nối.
 
 ## Đang làm
 
-- [ ] Provision project Supabase, Auth admin, GitHub App/secrets và Vercel production.
+- [ ] Provision project Supabase, Auth admin, GitHub App/secrets và gắn biến `VITE_*` vào Vercel production.
 - [ ] Import toàn bộ lịch sử rồi chạy shadow và đối chiếu 7 ngày trước khi bật authoritative schedule.
 
 ## Việc tiếp theo

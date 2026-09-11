@@ -17,7 +17,8 @@ thành `dashboard-gia-ban-le-clean.html`. Các file giao diện nguồn là
 Nền tảng cloud mới nằm trong `supabase/`, `tools/cloud_price_check.py`,
 `.github/workflows/price-check.yml` và `web/`. Frontend đã qua 20/20 test, production
 build và kiểm tra trình duyệt thật cho bảng Weekly, chọn model, drill-down Daily và
-màn mở khóa admin. Production cloud chưa được provision ở thời điểm handoff này.
+màn mở khóa admin. Vercel production và public GitHub repo đã hoạt động; Supabase,
+Auth admin, GitHub App và lịch authoritative chưa được provision ở thời điểm handoff này.
 
 ## Việc cần làm tiếp theo
 
