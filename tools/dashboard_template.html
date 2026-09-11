@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Price Watch · Theo dõi giá bán lẻ</title>
+  <style>__STYLE__</style>
+</head>
+<body>
+<main class="dashboard">
+  <header class="toolbar">
+    <div class="brand"><span class="brand-mark">⌁</span><span id="brandTitle">Weekly Price</span></div>
+    <div class="controls">
+      <button id="backWeekly" class="back" type="button" hidden>← Quay lại Weekly</button>
+      <div id="periodMode" class="segmented" aria-label="Khung thời gian">
+        <button id="weekMode" class="active" type="button" aria-pressed="true">Theo tuần</button>
+        <button id="dayMode" type="button" aria-pressed="false">Theo ngày</button>
+      </div>
+      <label id="weekField" class="field"><i>▣</i><select id="week" aria-label="Tuần"></select></label>
+      <label id="dateField" class="field" hidden><i>▦</i><select id="date" aria-label="Ngày"></select></label>
+      <label class="field"><i>◇</i><select id="category" aria-label="Danh mục"></select></label>
+      <label class="field model"><i>◈</i><select id="model" aria-label="Model"></select></label>
+      <label class="field"><i>◉</i><select id="partner" aria-label="Partner"></select></label>
+    </div>
+  </header>
+
+  <section id="matrixSection" class="section panel">
+    <div class="section-head"><div><h2>Bảng giá</h2><p id="matrixSub">So sánh giá cùng model giữa các Partner.</p></div></div>
+    <div id="matrixMeta" class="matrix-meta"></div>
+    <div class="scroll"><table class="matrix-table"><thead id="matrixHead"></thead><tbody id="matrixBody"></tbody></table></div>
+  </section>
+
+  <section class="section kpis">
+    <article class="kpi"><span class="kpi-icon">◌</span><div class="kpi-label">Model check</div><div class="kpi-value" id="modelsKpi">—</div><div class="kpi-note" id="modelsNote">—</div></article>
+    <article class="kpi"><span class="kpi-icon">◉</span><div class="kpi-label">Partner có giá</div><div class="kpi-value" id="partnersKpi">—</div><div class="kpi-note" id="partnersNote">—</div></article>
+    <article class="kpi"><span class="kpi-icon">↕</span><div class="kpi-label" id="changesLabel">Thay đổi tuần</div><div class="kpi-value" id="changesKpi">—</div><div class="kpi-note" id="changesNote">—</div></article>
+    <article class="kpi"><span class="kpi-icon">⇄</span><div class="kpi-label">Chênh lệch lớn nhất</div><div class="kpi-value" id="gapKpi">—</div><div class="kpi-note" id="gapNote">—</div></article>
+  </section>
+
+  <section id="trendSection" class="section panel" hidden>
+    <div class="section-head"><div><h2 id="trendTitle">Diễn biến giá theo Partner</h2><p id="trendSub">—</p></div><div class="legend" id="legend"></div></div>
+    <div id="chart" class="chart-wrap"></div>
+  </section>
+
+  <section id="compareSection" class="section panel" hidden>
+    <div class="section-head"><div><h2 id="compareTitle">So sánh chi tiết model theo Partner</h2><p id="compareSub">—</p></div><div class="legend" id="compareMeta"></div></div>
+    <div class="scroll"><table class="compare-table"><thead id="compareHead"></thead><tbody id="compareBody"></tbody></table></div>
+    <div id="sparkTip" class="spark-tip"></div>
+  </section>
+</main>
+<script>const PAYLOAD=__PAYLOAD__,weeklyRows=PAYLOAD.rows;__SCRIPT__</script>
+</body>
+</html>

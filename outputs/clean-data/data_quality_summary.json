@@ -1,0 +1,2428 @@
+{
+  "source_file": "Price Check Channel.xlsx",
+  "import_batch_id": "price_check_62813eb26afe",
+  "generated_at": "2026-09-11T08:37:47",
+  "input_observations": 23237,
+  "clean_observations": 23037,
+  "duplicate_keys": 200,
+  "conflicting_duplicate_issues": 0,
+  "weeks": 123,
+  "models": 115,
+  "raw_models": 157,
+  "categories": {
+    "AirPods": 2224,
+    "Apple Watch": 5585,
+    "MacBook": 3531,
+    "iPad": 4335,
+    "iPhone": 7362
+  },
+  "partners": {
+    "FPT": 4610,
+    "Viettel": 4601,
+    "CPS": 4610,
+    "MW": 4607,
+    "Shopdunk": 4609
+  },
+  "stock_status": {
+    "In stock": 20689,
+    "OOS": 1614,
+    "Missing": 734
+  },
+  "mapping_status": {
+    "Mapped": 13707,
+    "Auto-normalized": 9330
+  },
+  "corrected_prices": 0,
+  "new_models_by_week": {
+    "W4Q3FY24": [
+      "AirPods 2",
+      "AirPods 3",
+      "AirPods 3 (Lightning)",
+      "AirPods Pro",
+      "AirPods Pro 2",
+      "AirPods Pro Gen 2 (Lightning)",
+      "AirPods with charging case",
+      "Apple Watch S3 (38mm GPS)",
+      "Apple Watch S8 (41mm GPS)",
+      "Apple Watch S9 (41mm GPS)",
+      "Apple Watch S9 (41mm LTE)",
+      "Apple Watch S9 (45mm GPS)",
+      "Apple Watch SE 2 (40mm GPS)",
+      "Apple Watch SE 2022 (40mm GPS)",
+      "Apple Watch SE 2023 (40mm GPS)",
+      "Apple Watch SE 3 (40mm GPS)",
+      "Apple Watch Ultra (49mm)",
+      "Apple Watch Ultra 2 (49mm)",
+      "MacBook Air 13\" M1 8/256GB",
+      "MacBook Air 13\" M2 8/256GB",
+      "MacBook Air 13\" M3 8/256GB",
+      "MacBook Air 15\" M3 8/256GB",
+      "MacBook Pro M2",
+      "MacBook Pro M3 14'",
+      "MacBook Pro M3 Max 14'",
+      "iPad 9th (Wi-fi 64GB)",
+      "iPad Air 5 64GB Wifi",
+      "iPad Gen 10th 64GB Wifi",
+      "iPad Mini 6 64GB Wifi",
+      "iPad Pro 11\" M1 128GB Wifi",
+      "iPad Pro 11\" M2 128GB Wifi",
+      "iPhone 11 64GB",
+      "iPhone 12 64GB",
+      "iPhone 13 128GB",
+      "iPhone 14 128GB",
+      "iPhone 14 Plus 128GB",
+      "iPhone 14 Pro 128GB",
+      "iPhone 14 Pro Max 128GB",
+      "iPhone 14 Pro Max 256GB",
+      "iPhone 15 128GB",
+      "iPhone 15 Plus 128GB",
+      "iPhone 15 Pro 128GB",
+      "iPhone 15 Pro Max 256GB"
+    ],
+    "W5Q3FY24": [
+      "MacBook Pro M2 14' 512GB",
+      "MacBook Pro M3 14' 256GB",
+      "iPhone 15 Pro Max 128GB"
+    ],
+    "W6Q3FY24": [
+      "MacBook Pro M2 14' 256GB"
+    ],
+    "W7Q3FY24": [
+      "AirPods 2 with charging case",
+      "AirPods 3 with charging case",
+      "AirPods Pro 2 - 2023 (C-Type)",
+      "Apple Watch S9 (41mm CEL)",
+      "Apple Watch S9 (45mm CEL)",
+      "Apple Watch SE 2023 (40mm LTE)",
+      "Apple Watch SE 2023 (44mm GPS)",
+      "Apple Watch SE 2023 (44mm LTE)",
+      "MacBook Pro 14\" M3 8/512GB",
+      "iPad Gen 9th 64GB Wifi"
+    ],
+    "W8Q3FY24": [],
+    "W9Q3FY24": [],
+    "W10Q3FY24": [],
+    "W11Q3FY24": [],
+    "W12Q3FY24": [],
+    "W13Q3FY24": [],
+    "W1Q4FY24": [
+      "iPad Air M2 11\" 128GB Wifi",
+      "iPad Air M2 13\" 128GB Wifi",
+      "iPad Pro M4 11\" 256GB Wifi",
+      "iPad Pro M4 13\" 256GB Wifi"
+    ],
+    "W2Q4FY24": [],
+    "W3Q4FY24": [],
+    "W4Q4FY24": [],
+    "W5Q4FY24": [],
+    "W6Q4FY24": [],
+    "W7Q4FY24": [],
+    "W8Q4FY24": [],
+    "W9Q4FY24": [],
+    "W10Q4FY24": [],
+    "W11Q4FY24": [],
+    "W12Q4FY24": [],
+    "W13Q4FY24": [
+      "iPhone 16 128GB",
+      "iPhone 16 Plus 128GB",
+      "iPhone 16 Pro 128GB",
+      "iPhone 16 Pro Max 256GB"
+    ],
+    "W1Q1FY25": [],
+    "W2Q1FY25": [
+      "Apple Watch SE 2024 (40mm GPS)",
+      "Apple Watch SE 2024 (40mm LTE)",
+      "Apple Watch SE 2024 (44mm GPS)",
+      "Apple Watch SE 2024 (44mm LTE)"
+    ],
+    "W3Q1FY25": [
+      "Apple Watch S10 (42mm CEL)",
+      "Apple Watch S10 (42mm GPS)",
+      "Apple Watch S10 (46mm CEL)",
+      "Apple Watch S10 (46mm GPS)"
+    ],
+    "W4Q1FY25": [],
+    "W5Q1FY25": [
+      "AirPods 4 ANC",
+      "AirPods 4 with charging case"
+    ],
+    "W6Q1FY25": [],
+    "W7Q1FY25": [],
+    "W8Q1FY25": [
+      "Apple Watch SE 2 (40mm LTE)",
+      "Apple Watch SE 2 (44mm GPS)",
+      "Apple Watch SE 2 (44mm LTE)",
+      "iPad Mini 7 128GB Wifi"
+    ],
+    "W9Q1FY25": [],
+    "W10Q1FY25": [
+      "MacBook Air 13\" M2 16/256GB",
+      "MacBook Air 13\" M3 16/256GB",
+      "MacBook Air 15\" M3 16/256GB"
+    ],
+    "W11Q1FY25": [
+      "MacBook Pro 14\" M4 16/512GB"
+    ],
+    "W12Q1FY25": [],
+    "W13Q1FY25": [],
+    "W1Q2FY25": [],
+    "W2Q2FY25": [],
+    "W3Q2FY25": [],
+    "W4Q2FY25": [],
+    "W6Q2FY25": [],
+    "W7Q2FY25": [],
+    "W8Q2FY25": [],
+    "W9Q2FY25": [],
+    "W10Q2FY25": [
+      "iPhone 16e 128GB"
+    ],
+    "W11Q2FY25": [],
+    "W12Q2FY25": [],
+    "W13Q2FY25": [],
+    "W1Q3FY25": [
+      "MacBook Air 15\" M4 16/256GB"
+    ],
+    "W2Q3FY25": [
+      "iPad Air M3 11\" 128GB Wifi",
+      "iPad Air M3 13\" 128GB Wifi",
+      "iPad Gen 9th 128GB Wifi"
+    ],
+    "W3Q3FY25": [
+      "MacBook Air 13\" M4 16/256GB"
+    ],
+    "W4Q3FY25": [
+      "iPad Gen 11th 128GB Wifi"
+    ],
+    "W5Q3FY25": [],
+    "W6Q3FY25": [],
+    "W7Q3FY25": [],
+    "W8Q3FY25": [],
+    "W9Q3FY25": [],
+    "W10Q3FY25": [],
+    "W11Q3FY25": [],
+    "W12Q3FY25": [],
+    "W13Q3FY25": [],
+    "W1Q4FY25": [],
+    "W2Q4FY25": [],
+    "W3Q4FY25": [],
+    "W4Q4FY25": [],
+    "W5Q4FY25": [],
+    "W6Q4FY25": [],
+    "W7Q4FY25": [],
+    "W8Q4FY25": [],
+    "W9Q4FY25": [],
+    "W10Q4FY25": [],
+    "W11Q4FY25": [
+      "MacBook Pro 16\" M4 16/512GB"
+    ],
+    "W12Q4FY25": [
+      "iPhone 17 256GB",
+      "iPhone 17 Pro 256GB",
+      "iPhone 17 Pro Max 256GB",
+      "iPhone Air 256GB"
+    ],
+    "W13Q4FY25": [
+      "AirPods Pro 3"
+    ],
+    "W1Q1FY26": [],
+    "W2Q1FY26": [],
+    "W3Q1FY26": [
+      "Apple Watch S11 (42mm CEL)",
+      "Apple Watch S11 (42mm GPS)",
+      "Apple Watch S11 (46mm CEL)",
+      "Apple Watch S11 (46mm GPS)",
+      "Apple Watch SE 3 (40mm LTE)",
+      "Apple Watch SE 3 (44mm GPS)",
+      "Apple Watch SE 3 (44mm LTE)",
+      "Apple Watch Ultra 3 (49mm)"
+    ],
+    "W4Q1FY26": [],
+    "W5Q1FY26": [],
+    "W6Q1FY26": [],
+    "W7Q1FY26": [],
+    "W8Q1FY26": [
+      "MacBook Pro 16\" M4 24/512GB"
+    ],
+    "W9Q1FY26": [
+      "MacBook Pro 14\" M5 16/512GB",
+      "iPad Pro M5 11\" 256GB Wifi",
+      "iPad Pro M5 13\" 256GB Wifi"
+    ],
+    "W10Q1FY26": [],
+    "W11Q1FY26": [],
+    "W12Q1FY26": [],
+    "W13Q1FY26": [],
+    "W1Q2FY26": [],
+    "W2Q2FY26": [],
+    "W3Q2FY26": [],
+    "W4Q2FY26": [],
+    "W5Q2FY26": [],
+    "W6Q2FY26": [],
+    "W7Q2FY26": [],
+    "W9Q2FY26": [],
+    "W10Q2FY26": [
+      "MacBook Air 13\" M5 16/512GB",
+      "MacBook NEO A18 Pro (8/256GB)",
+      "iPhone 17e 256GB"
+    ],
+    "W11Q2FY26": [],
+    "W12Q2FY26": [],
+    "W13Q2FY26": [],
+    "W1Q3FY26": [],
+    "W2Q3FY26": [],
+    "W3Q3FY26": [
+      "iPad Air M4 11\" 128GB Wifi"
+    ],
+    "W4Q3FY26": [
+      "iPad Air M4 13\" 128GB Wifi"
+    ],
+    "W5Q3FY26": [],
+    "W6Q3FY26": [],
+    "W7Q3FY26": [
+      "MacBook Pro 16\" M5 Pro 24/1TB"
+    ],
+    "W8Q3FY26": [
+      "MacBook Air 15\" M5 16/512GB"
+    ],
+    "W9Q3FY26": [],
+    "W10Q3FY26": [],
+    "W11Q3FY26": [],
+    "W12Q3FY26": [],
+    "W13Q3FY26": [],
+    "W1Q4FY26": [],
+    "W2Q4FY26": [],
+    "W3Q4FY26": [],
+    "W4Q4FY26": [],
+    "W5Q4FY26": [],
+    "W6Q4FY26": [],
+    "W7Q4FY26": [],
+    "W8Q4FY26": [],
+    "W9Q4FY26": [],
+    "W10Q4FY26": [],
+    "W11Q4FY26": []
+  },
+  "model_lifecycle": [
+    {
+      "canonical_model": "AirPods 2",
+      "category": "AirPods",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "AirPods 2 with charging case",
+      "category": "AirPods",
+      "first_seen_week": "W7Q3FY24",
+      "last_seen_week": "W10Q1FY25",
+      "weeks_seen": 30,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "AirPods 3",
+      "category": "AirPods",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W6Q3FY24",
+      "weeks_seen": 3,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "AirPods 3 (Lightning)",
+      "category": "AirPods",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "AirPods 3 with charging case",
+      "category": "AirPods",
+      "first_seen_week": "W7Q3FY24",
+      "last_seen_week": "W11Q2FY25",
+      "weeks_seen": 43,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "AirPods 4 ANC",
+      "category": "AirPods",
+      "first_seen_week": "W5Q1FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 96,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "AirPods 4 with charging case",
+      "category": "AirPods",
+      "first_seen_week": "W5Q1FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 96,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "AirPods Pro",
+      "category": "AirPods",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "AirPods Pro 2",
+      "category": "AirPods",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W6Q3FY24",
+      "weeks_seen": 3,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "AirPods Pro 2 - 2023 (C-Type)",
+      "category": "AirPods",
+      "first_seen_week": "W7Q3FY24",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 120,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "AirPods Pro 3",
+      "category": "AirPods",
+      "first_seen_week": "W13Q4FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 50,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "AirPods Pro Gen 2 (Lightning)",
+      "category": "AirPods",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "AirPods with charging case",
+      "category": "AirPods",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W6Q3FY24",
+      "weeks_seen": 3,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch S10 (42mm CEL)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY25",
+      "last_seen_week": "W4Q1FY26",
+      "weeks_seen": 53,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch S10 (42mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY25",
+      "last_seen_week": "W4Q1FY26",
+      "weeks_seen": 53,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch S10 (46mm CEL)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY25",
+      "last_seen_week": "W4Q1FY26",
+      "weeks_seen": 53,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch S10 (46mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY25",
+      "last_seen_week": "W4Q1FY26",
+      "weeks_seen": 53,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch S11 (42mm CEL)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 47,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "Apple Watch S11 (42mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 47,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "Apple Watch S11 (46mm CEL)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 47,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "Apple Watch S11 (46mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 47,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "Apple Watch S3 (38mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch S8 (41mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch S9 (41mm CEL)",
+      "category": "Apple Watch",
+      "first_seen_week": "W7Q3FY24",
+      "last_seen_week": "W2Q1FY25",
+      "weeks_seen": 22,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch S9 (41mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W2Q1FY25",
+      "weeks_seen": 25,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch S9 (41mm LTE)",
+      "category": "Apple Watch",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W6Q3FY24",
+      "weeks_seen": 3,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch S9 (45mm CEL)",
+      "category": "Apple Watch",
+      "first_seen_week": "W7Q3FY24",
+      "last_seen_week": "W2Q1FY25",
+      "weeks_seen": 22,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch S9 (45mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W2Q1FY25",
+      "weeks_seen": 23,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2 (40mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q1FY26",
+      "weeks_seen": 49,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2 (40mm LTE)",
+      "category": "Apple Watch",
+      "first_seen_week": "W8Q1FY25",
+      "last_seen_week": "W4Q1FY26",
+      "weeks_seen": 48,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2 (44mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W8Q1FY25",
+      "last_seen_week": "W4Q1FY26",
+      "weeks_seen": 48,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2 (44mm LTE)",
+      "category": "Apple Watch",
+      "first_seen_week": "W8Q1FY25",
+      "last_seen_week": "W4Q1FY26",
+      "weeks_seen": 48,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2022 (40mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2023 (40mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W1Q1FY25",
+      "weeks_seen": 24,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2023 (40mm LTE)",
+      "category": "Apple Watch",
+      "first_seen_week": "W7Q3FY24",
+      "last_seen_week": "W1Q1FY25",
+      "weeks_seen": 21,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2023 (44mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W7Q3FY24",
+      "last_seen_week": "W1Q1FY25",
+      "weeks_seen": 21,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2023 (44mm LTE)",
+      "category": "Apple Watch",
+      "first_seen_week": "W7Q3FY24",
+      "last_seen_week": "W1Q1FY25",
+      "weeks_seen": 21,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2024 (40mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W2Q1FY25",
+      "last_seen_week": "W7Q1FY25",
+      "weeks_seen": 6,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2024 (40mm LTE)",
+      "category": "Apple Watch",
+      "first_seen_week": "W2Q1FY25",
+      "last_seen_week": "W7Q1FY25",
+      "weeks_seen": 6,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2024 (44mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W2Q1FY25",
+      "last_seen_week": "W7Q1FY25",
+      "weeks_seen": 6,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 2024 (44mm LTE)",
+      "category": "Apple Watch",
+      "first_seen_week": "W2Q1FY25",
+      "last_seen_week": "W7Q1FY25",
+      "weeks_seen": 6,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch SE 3 (40mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 48,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "Apple Watch SE 3 (40mm LTE)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 47,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "Apple Watch SE 3 (44mm GPS)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 47,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "Apple Watch SE 3 (44mm LTE)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 47,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "Apple Watch Ultra (49mm)",
+      "category": "Apple Watch",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W6Q3FY24",
+      "weeks_seen": 3,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch Ultra 2 (49mm)",
+      "category": "Apple Watch",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W6Q1FY26",
+      "weeks_seen": 80,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "Apple Watch Ultra 3 (49mm)",
+      "category": "Apple Watch",
+      "first_seen_week": "W3Q1FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 47,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "MacBook Air 13\" M1 8/256GB",
+      "category": "MacBook",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q1FY26",
+      "weeks_seen": 78,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Air 13\" M2 16/256GB",
+      "category": "MacBook",
+      "first_seen_week": "W10Q1FY25",
+      "last_seen_week": "W2Q3FY26",
+      "weeks_seen": 69,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Air 13\" M2 8/256GB",
+      "category": "MacBook",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W9Q1FY25",
+      "weeks_seen": 32,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Air 13\" M3 16/256GB",
+      "category": "MacBook",
+      "first_seen_week": "W10Q1FY25",
+      "last_seen_week": "W4Q1FY26",
+      "weeks_seen": 46,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Air 13\" M3 8/256GB",
+      "category": "MacBook",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W9Q1FY25",
+      "weeks_seen": 32,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Air 13\" M4 16/256GB",
+      "category": "MacBook",
+      "first_seen_week": "W3Q3FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 73,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "MacBook Air 13\" M5 16/512GB",
+      "category": "MacBook",
+      "first_seen_week": "W10Q2FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 28,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "MacBook Air 15\" M3 16/256GB",
+      "category": "MacBook",
+      "first_seen_week": "W10Q1FY25",
+      "last_seen_week": "W13Q2FY25",
+      "weeks_seen": 16,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Air 15\" M3 8/256GB",
+      "category": "MacBook",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W9Q1FY25",
+      "weeks_seen": 32,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Air 15\" M4 16/256GB",
+      "category": "MacBook",
+      "first_seen_week": "W1Q3FY25",
+      "last_seen_week": "W7Q3FY26",
+      "weeks_seen": 58,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Air 15\" M5 16/512GB",
+      "category": "MacBook",
+      "first_seen_week": "W8Q3FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 17,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "MacBook NEO A18 Pro (8/256GB)",
+      "category": "MacBook",
+      "first_seen_week": "W10Q2FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 28,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "MacBook Pro 14\" M3 8/512GB",
+      "category": "MacBook",
+      "first_seen_week": "W7Q3FY24",
+      "last_seen_week": "W10Q1FY25",
+      "weeks_seen": 30,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Pro 14\" M4 16/512GB",
+      "category": "MacBook",
+      "first_seen_week": "W11Q1FY25",
+      "last_seen_week": "W3Q3FY26",
+      "weeks_seen": 69,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Pro 14\" M5 16/512GB",
+      "category": "MacBook",
+      "first_seen_week": "W9Q1FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 41,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "MacBook Pro 16\" M4 16/512GB",
+      "category": "MacBook",
+      "first_seen_week": "W11Q4FY25",
+      "last_seen_week": "W7Q1FY26",
+      "weeks_seen": 10,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Pro 16\" M4 24/512GB",
+      "category": "MacBook",
+      "first_seen_week": "W8Q1FY26",
+      "last_seen_week": "W6Q3FY26",
+      "weeks_seen": 24,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Pro 16\" M5 Pro 24/1TB",
+      "category": "MacBook",
+      "first_seen_week": "W7Q3FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 18,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "MacBook Pro M2",
+      "category": "MacBook",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Pro M2 14' 256GB",
+      "category": "MacBook",
+      "first_seen_week": "W6Q3FY24",
+      "last_seen_week": "W6Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Pro M2 14' 512GB",
+      "category": "MacBook",
+      "first_seen_week": "W5Q3FY24",
+      "last_seen_week": "W5Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Pro M3 14'",
+      "category": "MacBook",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Pro M3 14' 256GB",
+      "category": "MacBook",
+      "first_seen_week": "W5Q3FY24",
+      "last_seen_week": "W6Q3FY24",
+      "weeks_seen": 2,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "MacBook Pro M3 Max 14'",
+      "category": "MacBook",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad 9th (Wi-fi 64GB)",
+      "category": "iPad",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W6Q3FY24",
+      "weeks_seen": 3,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Air 5 64GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q1FY25",
+      "weeks_seen": 27,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Air M2 11\" 128GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W1Q4FY24",
+      "last_seen_week": "W1Q3FY25",
+      "weeks_seen": 39,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Air M2 13\" 128GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W1Q4FY24",
+      "last_seen_week": "W1Q3FY25",
+      "weeks_seen": 39,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Air M3 11\" 128GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W2Q3FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 74,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPad Air M3 13\" 128GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W2Q3FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 74,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPad Air M4 11\" 128GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W3Q3FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 22,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPad Air M4 13\" 128GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W4Q3FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 21,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPad Gen 10th 64GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W5Q3FY25",
+      "weeks_seen": 53,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Gen 11th 128GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W4Q3FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 72,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPad Gen 9th 128GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W2Q3FY25",
+      "last_seen_week": "W3Q3FY25",
+      "weeks_seen": 2,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Gen 9th 64GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W7Q3FY24",
+      "last_seen_week": "W1Q3FY25",
+      "weeks_seen": 46,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Mini 6 64GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W7Q1FY25",
+      "weeks_seen": 30,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Mini 7 128GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W8Q1FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 93,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPad Pro 11\" M1 128GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Pro 11\" M2 128GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q4FY24",
+      "weeks_seen": 14,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Pro M4 11\" 256GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W1Q4FY24",
+      "last_seen_week": "W12Q2FY26",
+      "weeks_seen": 88,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Pro M4 13\" 256GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W1Q4FY24",
+      "last_seen_week": "W12Q2FY26",
+      "weeks_seen": 88,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPad Pro M5 11\" 256GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W9Q1FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 41,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPad Pro M5 13\" 256GB Wifi",
+      "category": "iPad",
+      "first_seen_week": "W9Q1FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 41,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone 11 64GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W11Q2FY25",
+      "weeks_seen": 46,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPhone 12 64GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W3Q4FY25",
+      "weeks_seen": 64,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPhone 13 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 123,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone 14 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 123,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone 14 Plus 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W12Q4FY25",
+      "weeks_seen": 73,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPhone 14 Pro 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPhone 14 Pro Max 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPhone 14 Pro Max 256GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W4Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPhone 15 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 123,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone 15 Plus 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 123,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone 15 Pro 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W11Q2FY25",
+      "weeks_seen": 46,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPhone 15 Pro Max 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W5Q3FY24",
+      "last_seen_week": "W5Q3FY24",
+      "weeks_seen": 1,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPhone 15 Pro Max 256GB",
+      "category": "iPhone",
+      "first_seen_week": "W4Q3FY24",
+      "last_seen_week": "W12Q4FY25",
+      "weeks_seen": 72,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPhone 16 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W13Q4FY24",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 101,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone 16 Plus 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W13Q4FY24",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 101,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone 16 Pro 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W13Q4FY24",
+      "last_seen_week": "W5Q3FY26",
+      "weeks_seen": 82,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPhone 16 Pro Max 256GB",
+      "category": "iPhone",
+      "first_seen_week": "W13Q4FY24",
+      "last_seen_week": "W5Q3FY26",
+      "weeks_seen": 82,
+      "status": "Not seen in latest week"
+    },
+    {
+      "canonical_model": "iPhone 16e 128GB",
+      "category": "iPhone",
+      "first_seen_week": "W10Q2FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 79,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone 17 256GB",
+      "category": "iPhone",
+      "first_seen_week": "W12Q4FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 51,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone 17 Pro 256GB",
+      "category": "iPhone",
+      "first_seen_week": "W12Q4FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 51,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone 17 Pro Max 256GB",
+      "category": "iPhone",
+      "first_seen_week": "W12Q4FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 51,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone 17e 256GB",
+      "category": "iPhone",
+      "first_seen_week": "W10Q2FY26",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 28,
+      "status": "Active"
+    },
+    {
+      "canonical_model": "iPhone Air 256GB",
+      "category": "iPhone",
+      "first_seen_week": "W12Q4FY25",
+      "last_seen_week": "W11Q4FY26",
+      "weeks_seen": 51,
+      "status": "Active"
+    }
+  ],
+  "issues": [
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods 4 ANC|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods 4 ANC|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods 4 ANC|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods 4 ANC|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods 4 ANC|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods 4 with charging case|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods 4 with charging case|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods 4 with charging case|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods 4 with charging case|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods 4 with charging case|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods Pro 2 - 2023 (C-Type)|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods Pro 2 - 2023 (C-Type)|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods Pro 2 - 2023 (C-Type)|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods Pro 2 - 2023 (C-Type)|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods Pro 2 - 2023 (C-Type)|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods Pro 3|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods Pro 3|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods Pro 3|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods Pro 3|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|AirPods Pro 3|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (42mm CEL)|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (42mm CEL)|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (42mm CEL)|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (42mm CEL)|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (42mm CEL)|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (42mm GPS)|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (42mm GPS)|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (42mm GPS)|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (42mm GPS)|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (42mm GPS)|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (46mm CEL)|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (46mm CEL)|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (46mm CEL)|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (46mm CEL)|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (46mm CEL)|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (46mm GPS)|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (46mm GPS)|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (46mm GPS)|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (46mm GPS)|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch S11 (46mm GPS)|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (40mm GPS)|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (40mm GPS)|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (40mm GPS)|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (40mm GPS)|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (40mm GPS)|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (40mm LTE)|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (40mm LTE)|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (40mm LTE)|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (40mm LTE)|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (40mm LTE)|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (44mm GPS)|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (44mm GPS)|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (44mm GPS)|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (44mm GPS)|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (44mm GPS)|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (44mm LTE)|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (44mm LTE)|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (44mm LTE)|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (44mm LTE)|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch SE 3 (44mm LTE)|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch Ultra 3 (49mm)|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch Ultra 3 (49mm)|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch Ultra 3 (49mm)|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch Ultra 3 (49mm)|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|Apple Watch Ultra 3 (49mm)|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 13\" M2 16/256GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 13\" M2 16/256GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 13\" M2 16/256GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 13\" M2 16/256GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 13\" M2 16/256GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 13\" M4 16/256GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 13\" M4 16/256GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 13\" M4 16/256GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 13\" M4 16/256GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 13\" M4 16/256GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 15\" M4 16/256GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 15\" M4 16/256GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 15\" M4 16/256GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 15\" M4 16/256GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Air 15\" M4 16/256GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 14\" M4 16/512GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 14\" M4 16/512GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 14\" M4 16/512GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 14\" M4 16/512GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 14\" M4 16/512GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 14\" M5 16/512GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 14\" M5 16/512GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 14\" M5 16/512GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 14\" M5 16/512GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 14\" M5 16/512GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 16\" M4 24/512GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 16\" M4 24/512GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 16\" M4 24/512GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 16\" M4 24/512GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|MacBook Pro 16\" M4 24/512GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Air M3 11\" 128GB Wifi|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Air M3 11\" 128GB Wifi|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Air M3 11\" 128GB Wifi|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Air M3 11\" 128GB Wifi|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Air M3 11\" 128GB Wifi|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Air M3 13\" 128GB Wifi|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Air M3 13\" 128GB Wifi|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Air M3 13\" 128GB Wifi|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Air M3 13\" 128GB Wifi|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Air M3 13\" 128GB Wifi|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Gen 11th 128GB Wifi|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Gen 11th 128GB Wifi|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Gen 11th 128GB Wifi|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Gen 11th 128GB Wifi|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Gen 11th 128GB Wifi|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Mini 7 128GB Wifi|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Mini 7 128GB Wifi|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Mini 7 128GB Wifi|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Mini 7 128GB Wifi|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Mini 7 128GB Wifi|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M4 11\" 256GB Wifi|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M4 11\" 256GB Wifi|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M4 11\" 256GB Wifi|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M4 11\" 256GB Wifi|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M4 11\" 256GB Wifi|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M4 13\" 256GB Wifi|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M4 13\" 256GB Wifi|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M4 13\" 256GB Wifi|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M4 13\" 256GB Wifi|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M4 13\" 256GB Wifi|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M5 11\" 256GB Wifi|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M5 11\" 256GB Wifi|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M5 11\" 256GB Wifi|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M5 11\" 256GB Wifi|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M5 11\" 256GB Wifi|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M5 13\" 256GB Wifi|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M5 13\" 256GB Wifi|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M5 13\" 256GB Wifi|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M5 13\" 256GB Wifi|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPad Pro M5 13\" 256GB Wifi|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 13 128GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 13 128GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 13 128GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 13 128GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 13 128GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 14 128GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 14 128GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 14 128GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 14 128GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 14 128GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 15 128GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 15 128GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 15 128GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 15 128GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 15 128GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 15 Plus 128GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 15 Plus 128GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 15 Plus 128GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 15 Plus 128GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 15 Plus 128GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 128GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 128GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 128GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 128GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 128GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Plus 128GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Plus 128GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Plus 128GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Plus 128GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Plus 128GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Pro 128GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Pro 128GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Pro 128GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Pro 128GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Pro 128GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Pro Max 256GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Pro Max 256GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Pro Max 256GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Pro Max 256GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16 Pro Max 256GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16e 128GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16e 128GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16e 128GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16e 128GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 16e 128GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 256GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 256GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 256GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 256GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 256GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 Pro 256GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 Pro 256GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 Pro 256GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 Pro 256GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 Pro 256GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 Pro Max 256GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 Pro Max 256GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 Pro Max 256GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 Pro Max 256GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone 17 Pro Max 256GB|Viettel",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone Air 256GB|CPS",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone Air 256GB|FPT",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone Air 256GB|MW",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone Air 256GB|Shopdunk",
+      "detail": "2 identical observations"
+    },
+    {
+      "severity": "Medium",
+      "type": "duplicate",
+      "key": "W9Q1FY26|iPhone Air 256GB|Viettel",
+      "detail": "2 identical observations"
+    }
+  ]
+}
