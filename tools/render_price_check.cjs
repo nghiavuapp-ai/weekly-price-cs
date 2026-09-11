@@ -180,9 +180,11 @@ async function renderedAvailability(page, retailer, rendered) {
 
 async function main() {
   const inputPath = process.argv[2];
-  const chromePath = process.argv[3] || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+  const chromePath = process.argv[3] || process.env.PRICE_CHECK_CHROMIUM_BIN || undefined;
   const tasks = JSON.parse(fs.readFileSync(inputPath, "utf8"));
-  const browser = await chromium.launch({ headless: true, executablePath: chromePath });
+  const launchOptions = { headless: true };
+  if (chromePath) launchOptions.executablePath = chromePath;
+  const browser = await chromium.launch(launchOptions);
   const context = await browser.newContext({ locale: "vi-VN" });
   const results = [];
 

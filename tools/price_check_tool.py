@@ -21,6 +21,7 @@ import csv
 import datetime as dt
 import html
 import json
+import os
 import re
 import shutil
 import ssl
@@ -170,6 +171,49 @@ class Result:
     purchase_action: str = ""
     purchase_action_method: str = ""
     purchase_action_text: str = ""
+
+
+@dataclass(frozen=True)
+class BrowserRuntime:
+    node_bin: Path | None
+    node_path: Path | None
+    chromium_bin: Path | None
+
+
+def resolve_browser_runtime(
+    env: dict[str, str] | None = None,
+    platform_name: str | None = None,
+    which=shutil.which,
+) -> BrowserRuntime:
+    """Resolve browser tooling from explicit overrides, then platform defaults."""
+    values = os.environ if env is None else env
+    platform_name = platform_name or sys.platform
+    mac_node = Path("/Users/vutrungnghia/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node")
+    mac_modules = Path("/Users/vutrungnghia/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules")
+    mac_chrome = Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+
+    def configured(name: str) -> Path | None:
+        value = values.get(name, "").strip()
+        return Path(value) if value else None
+
+    node_bin = configured("PRICE_CHECK_NODE_BIN")
+    node_path = configured("PRICE_CHECK_NODE_PATH")
+    chromium_bin = configured("PRICE_CHECK_CHROMIUM_BIN")
+    if platform_name == "darwin":
+        node_bin = node_bin or mac_node
+        node_path = node_path or mac_modules
+        chromium_bin = chromium_bin or mac_chrome
+    else:
+        node_bin = node_bin or next((Path(path) for name in ("node", "nodejs") if (path := which(name))), None)
+        chromium_bin = chromium_bin or next(
+            (
+                Path(path)
+                for name in ("chromium", "chromium-browser", "google-chrome", "google-chrome-stable")
+                if (path := which(name))
+            ),
+            None,
+        )
+    return BrowserRuntime(node_bin=node_bin, node_path=node_path, chromium_bin=chromium_bin)
 
 
 def normalize_name(value: str) -> str:
@@ -1203,8 +1247,11 @@ def workbook_context(workbook_path: Path, source_sheet: str) -> tuple[dict[tuple
     return previous, model_channel_values
 
 
-def add_initial_risk_flags(results: list[Result], workbook_path: Path, source_sheet: str) -> None:
-    previous, _ = workbook_context(workbook_path, source_sheet)
+def add_initial_risk_flags_from_previous(
+    results: list[Result],
+    previous: dict[tuple[str, str], int | str | None],
+) -> None:
+    """Apply the shared crawler risk rules against a supplied prior-price map."""
     current_by_model: dict[str, list[int]] = {}
     for result in results:
         if isinstance(result.value, int):
@@ -1265,6 +1312,11 @@ def add_initial_risk_flags(results: list[Result], workbook_path: Path, source_sh
             result.decision_note = "; ".join(notes)
 
 
+def add_initial_risk_flags(results: list[Result], workbook_path: Path, source_sheet: str) -> None:
+    previous, _ = workbook_context(workbook_path, source_sheet)
+    add_initial_risk_flags_from_previous(results, previous)
+
+
 def run_render_backcheck(results: list[Result], report_dir: Path, enabled: bool = True) -> None:
     if not enabled:
         return
@@ -1272,11 +1324,9 @@ def run_render_backcheck(results: list[Result], report_dir: Path, enabled: bool 
     if not candidates:
         return
 
-    node_bin = Path("/Users/vutrungnghia/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node")
-    node_modules = Path("/Users/vutrungnghia/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules")
-    chrome = Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+    runtime = resolve_browser_runtime()
     helper = Path(__file__).with_name("render_price_check.cjs")
-    if not (node_bin.exists() and node_modules.exists() and chrome.exists() and helper.exists()):
+    if not (runtime.node_bin and runtime.node_bin.exists() and helper.exists()):
         for result in candidates:
             flags = set(filter(None, result.risk_flags.split("|")))
             flags.add("WARN_RENDER_UNAVAILABLE")
@@ -1286,8 +1336,9 @@ def run_render_backcheck(results: list[Result], report_dir: Path, enabled: bool 
         return
 
     report_dir.mkdir(parents=True, exist_ok=True)
-    env = dict(**{k: v for k, v in __import__("os").environ.items()})
-    env["NODE_PATH"] = str(node_modules)
+    env = dict(os.environ)
+    if runtime.node_path:
+        env["NODE_PATH"] = str(runtime.node_path)
     rendered_items: list[dict] = []
     render_errors: dict[str, str] = {}
     stamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -1300,8 +1351,11 @@ def run_render_backcheck(results: list[Result], report_dir: Path, enabled: bool 
         ]
         input_path.write_text(json.dumps(tasks, ensure_ascii=False), encoding="utf-8")
         try:
+            command = [str(runtime.node_bin), str(helper), str(input_path)]
+            if runtime.chromium_bin:
+                command.append(str(runtime.chromium_bin))
             completed = subprocess.run(
-                [str(node_bin), str(helper), str(input_path), str(chrome)],
+                command,
                 cwd=str(Path.cwd()),
                 env=env,
                 text=True,

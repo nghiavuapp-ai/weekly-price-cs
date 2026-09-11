@@ -1,0 +1,12 @@
+{
+  "name": "price-check-cloud-crawler",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "check": "node --check tools/render_price_check.cjs",
+    "test": "npm run check"
+  },
+  "dependencies": {
+    "playwright": "1.62.1"
+  }
+}
