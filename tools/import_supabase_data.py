@@ -12,6 +12,7 @@ import datetime as dt
 import json
 import os
 import re
+import ssl
 import urllib.parse
 import urllib.request
 import uuid
@@ -20,6 +21,7 @@ from typing import Callable, Iterable, Mapping, Sequence
 from zoneinfo import ZoneInfo
 
 from openpyxl import load_workbook
+import certifi
 
 from clean_price_data import build_clean_data, canonicalize_model, normalize_price
 
@@ -563,7 +565,8 @@ def build_project_payload(root: Path, generated_at: str) -> dict[str, object]:
 
 
 def _default_sender(request: urllib.request.Request, timeout: int) -> None:
-    with urllib.request.urlopen(request, timeout=timeout):  # noqa: S310 - explicit CLI destination.
+    context = ssl.create_default_context(cafile=certifi.where())
+    with urllib.request.urlopen(request, timeout=timeout, context=context):  # noqa: S310 - explicit CLI destination.
         return None
 
 

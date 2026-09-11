@@ -1,8 +1,11 @@
 import copy
 import json
+import ssl
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
+from urllib.request import Request
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,7 +17,27 @@ from import_supabase_data import (  # noqa: E402
     build_weekly_payload,
     merge_payloads,
     upsert_payload,
+    _default_sender,
 )
+
+
+class HttpsTransportTests(unittest.TestCase):
+    def test_importer_loads_trusted_ca_certificates(self):
+        class Response:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+        def fake_urlopen(_request, timeout, context=None):
+            self.assertEqual(timeout, 10)
+            self.assertIsInstance(context, ssl.SSLContext)
+            self.assertGreater(len(context.get_ca_certs()), 0)
+            return Response()
+
+        with patch("import_supabase_data.urllib.request.urlopen", fake_urlopen):
+            _default_sender(Request("https://example.supabase.co"), 10)
 
 
 class CatalogPayloadTests(unittest.TestCase):
