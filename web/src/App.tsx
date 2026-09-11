@@ -8,6 +8,7 @@ import type { CorrectionPayload } from './domain/corrections'
 import type { Granularity } from './domain/price-data'
 import { downloadWorkbook } from './export/download'
 import { adminEmail, createConfiguredClient } from './lib/supabase'
+import { withFutureJwtRetry } from './lib/auth-retry'
 import { AdminPanel } from './components/AdminPanel'
 import { Dashboard } from './components/Dashboard'
 
@@ -20,7 +21,10 @@ export default function App() {
   const [session, setSession] = useState<Session | null>(null)
   const sourceFixture = fixture as DashboardFixture
   const load = useCallback(async () => {
-    try { setSnapshot(await loadDashboardData(client, sourceFixture)); setError('') }
+    try {
+      setSnapshot(await withFutureJwtRetry(() => loadDashboardData(client, sourceFixture)))
+      setError('')
+    }
     catch (cause) { setError(cause instanceof Error ? cause.message : 'Không thể tải dữ liệu.'); setSnapshot(await loadDashboardData(null, sourceFixture)) }
   }, [])
   useEffect(() => {
@@ -46,4 +50,3 @@ export default function App() {
       onSignIn={actions.signIn} onSignOut={actions.signOut} onCorrection={actions.correction} onConfigMutation={actions.config} />
   </>
 }
-
