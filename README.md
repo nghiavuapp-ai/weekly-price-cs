@@ -1,5 +1,55 @@
 # Price Check Automation
 
+## Nen tang web tu dong
+
+Phien ban cloud moi dat Supabase lam nguon du lieu chinh, GitHub Actions chay crawler
+va Vercel phuc vu dashboard React trong thu muc `web/`. Dashboard cong khai chi doc;
+nut `Sua gia` o footer mo khu vuc admin bang mat khau Supabase Auth. Admin co the:
+
+- sua gia, ton kho, trang thai review va ghi chu; moi lan sua la mot audit record moi;
+- them/tat model, partner, URL san pham va override crawler;
+- xem thay doi realtime ma khong build lai website;
+- tai `Price Check.xlsx` hoac `Price Check Daily.xlsx` tu du lieu dang hien co.
+
+Du lieu crawler goc la append-only. Sua thu cong chi tac dong observation dung ngay
+hoac tuan da chon, khong sua cac ky khac va khong bi crawler tuong lai ghi de.
+
+### Chay web local
+
+```bash
+npm --prefix web ci
+npm --prefix web run dev
+```
+
+Khong co bien moi truong, web dung fixture tao tu workbook de preview. Khi co Supabase,
+dat ba bien cong khai `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,
+`VITE_ADMIN_EMAIL` trong Vercel. Email admin khong phai secret; mat khau tuyet doi
+khong ghi vao file `.env`, Git hay Vercel build log.
+
+### Khoi tao cloud
+
+1. Tao Supabase project mien phi va chay migration trong `supabase/migrations/`.
+2. Tao user trong Supabase Auth, sau do them `user_id` vao `private.admin_users`.
+3. Import lich su bang `python3 tools/import_supabase_data.py --apply` sau khi dat
+   `SUPABASE_URL` va `SUPABASE_SERVICE_ROLE_KEY` trong shell rieng.
+4. Tao GitHub App co quyen Actions `write`, Metadata `read`, cai App chi vao repo nay.
+5. Deploy Edge Function `dispatch-price-check`, dat cac secret duoc liet ke trong
+   `.env.example`, va luu `dispatcher_url`, `dispatcher_secret` trong Supabase Vault.
+6. Ap dung `supabase/seed.sql` de cai ba lich UTC tuong ung Asia/Ho_Chi_Minh:
+   primary 11:00 hang ngay, retry 11:30 hang ngay, Weekly 12:00 thu Sau.
+7. Dat `SUPABASE_URL` va `SUPABASE_SERVICE_ROLE_KEY` trong GitHub Actions secrets;
+   dat ba bien `VITE_*` trong Vercel va deploy repo.
+
+Chay shadow thu cong truoc khi mo lich authoritative:
+
+```bash
+gh workflow run price-check.yml -f run_type=shadow
+```
+
+Shadow crawl that nhung khong ghi observation. Sau khi doi chieu du 7 ngay, moi coi
+lich cloud la nguon authoritative. Nen tang free tier khong co SLA 100%; dashboard
+se hien canh bao khi Daily/Weekly tre, retry con loi hoac run bi treo.
+
 Cong cu nay cap nhat file `Price Check.xlsx` tu cac link san pham truc tiep trong `Link Product.xlsx`.
 
 ## File dau vao

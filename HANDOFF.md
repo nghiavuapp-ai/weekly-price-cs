@@ -14,9 +14,10 @@ thành `dashboard-gia-ban-le-clean.html`. Các file giao diện nguồn là
 `tools/dashboard_template.html`, `tools/dashboard_style.css` và
 `tools/dashboard_ui.js`.
 
-Đã xác minh 34 unit test, cú pháp JavaScript, build thực tế và luồng trình duyệt:
-tổng quan Weekly, tổng quan Daily, chi tiết Daily, quay lại Weekly, trạng thái bộ lọc
-và console không có warning/error. Preview chỉ nằm trong workspace nguồn, chưa deploy.
+Nền tảng cloud mới nằm trong `supabase/`, `tools/cloud_price_check.py`,
+`.github/workflows/price-check.yml` và `web/`. Frontend đã qua 20/20 test, production
+build và kiểm tra trình duyệt thật cho bảng Weekly, chọn model, drill-down Daily và
+màn mở khóa admin. Production cloud chưa được provision ở thời điểm handoff này.
 
 ## Việc cần làm tiếp theo
 
@@ -24,7 +25,7 @@ và console không có warning/error. Preview chỉ nằm trong workspace nguồ
 2. Kiểm tra các dòng màu vàng có `Review Status = Pending`.
 3. Chỉ sửa giá đã xác nhận qua `Price Overrides.csv`.
 4. Không dùng Daily để thay thế Weekly khi chưa có quyết định mới.
-5. Duyệt local preview trước khi cho phép sao chép hoặc deploy dashboard.
+5. Provision cloud theo runbook trong README, import lịch sử và chạy shadow 7 ngày trước khi bật lịch authoritative.
 6. Weekly Price Check kiểm tra CTA mua hàng cùng với giá: CTA âm tính là OOS; CTA xung đột hoặc không xác minh được phải review.
 
 ## Kiểm định gần nhất

@@ -1,0 +1,4 @@
+project_id = "price-check"
+
+[functions.dispatch-price-check]
+verify_jwt = false

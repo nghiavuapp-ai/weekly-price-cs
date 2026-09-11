@@ -62,6 +62,22 @@ Chỉ ghi quyết định đã xác nhận, gồm ngày, trạng thái, lý do v
 - **Lý do:** Giá vẫn có thể còn trong metadata hoặc trang sản phẩm dù SKU không thể đặt hàng, như iPhone 13 trên Shopdunk và FPT.
 - **Tác động:** Browser back-check ghi nhận CTA đang hiển thị; HTML có CTA xung đột hoặc không xác minh được bị giữ ở review, không tự động ghi là còn hàng.
 
+### D-008 — Chuyển nền tảng sang Supabase + GitHub Actions + Vercel
+
+- **Ngày:** 2026-09-11
+- **Trạng thái:** confirmed
+- **Quyết định:** Supabase là source of truth và giữ Auth/Realtime/lịch; GitHub Actions public repo chạy Python crawler; Vercel host React/Vite dashboard.
+- **Lý do:** Tự vận hành trong giới hạn free tier, không phụ thuộc Codex heartbeat hoặc máy Mac luôn bật.
+- **Tác động:** Daily chạy 11:00, retry 11:30 hằng ngày, Weekly chạy 12:00 thứ Sáu; GitHub App dispatcher không dùng personal access token dài hạn.
+
+### D-009 — Correction thủ công là append-only theo kỳ
+
+- **Ngày:** 2026-09-11
+- **Trạng thái:** confirmed
+- **Quyết định:** Giá, tồn kho và review được sửa bằng record correction mới gắn với observation chính xác; dữ liệu crawl gốc không sửa.
+- **Lý do:** Giữ audit đầy đủ và không để lần crawl sau thay đổi lịch sử.
+- **Tác động:** Dashboard cập nhật realtime; correction chỉ áp dụng đúng ngày/tuần được chọn.
+
 ## Chưa quyết định
 
-- **unknown:** Thời điểm duyệt và deploy dashboard tích hợp lên hosting.
+- **unknown:** Thời điểm bật lịch authoritative sau khi hoàn tất shadow acceptance 7 ngày.
