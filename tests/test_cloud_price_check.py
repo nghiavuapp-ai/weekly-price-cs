@@ -2,6 +2,7 @@ import datetime as dt
 import json
 import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -99,7 +100,7 @@ class CatalogAndRetryTests(unittest.TestCase):
             [(item.target.model, item.target.retailer, item.target.url) for item in catalog.items],
             [
                 ("iPhone 17e 256GB", "FPT", "https://fpt.test/17e"),
-                ("iPhone 17e 256GB", "Shopdunk", "https://shopdunk.test/17e"),
+                ("iPhone 17e 256GB", "SHOPDUNK", "https://shopdunk.test/17e"),
             ],
         )
         self.assertEqual(catalog.overrides, {"https://fpt.test/17e": (17_290_000, "Confirmed")})
@@ -127,6 +128,20 @@ class CatalogAndRetryTests(unittest.TestCase):
         observation_call = next(call for call in self.client.calls if call[0] == "price_observations")
         self.assertEqual(run_call[2], {"run_key": "eq.daily-20260911-primary"})
         self.assertEqual(observation_call[2], {"run_id": "eq.run-primary", "fetch_ok": "eq.false"})
+
+    def test_renamed_retailer_uses_immutable_code_for_crawler_rules(self):
+        class RenamedRetailerClient(FakeReadClient):
+            def select(self, table, **kwargs):
+                rows = super().select(table, **kwargs)
+                if table == "retailers":
+                    rows[0] = {**rows[0], "name": "FPT Vietnam Display Name"}
+                return rows
+
+        catalog = self.cloud.load_active_catalog(RenamedRetailerClient())
+        fpt = next(item for item in catalog.items if item.link_id == "l-fpt")
+
+        self.assertEqual(fpt.target.retailer, "FPT")
+        self.assertEqual(fpt.retailer_name, "FPT Vietnam Display Name")
 
 
 class ObservationTests(unittest.TestCase):
@@ -241,19 +256,39 @@ class RestAndDuplicateTests(unittest.TestCase):
         self.assertEqual(json.loads(request.data), [{"id": "observation-1"}])
         self.assertNotIn("server-secret", request.full_url)
 
-    def test_existing_run_is_a_no_op_before_crawling_or_writing(self):
-        class DuplicateClient(FakeReadClient):
-            def __init__(self):
-                super().__init__()
-                self.writes = []
+    class RunClient(FakeReadClient):
+        def __init__(self, existing_run=None, existing_observations=None, primary_run=None):
+            super().__init__()
+            self.existing_run = existing_run
+            self.existing_observations = existing_observations or []
+            self.primary_run = primary_run
+            self.writes = []
 
-            def insert_ignore(self, table, rows):
-                self.writes.append((table, rows))
+        def select(self, table, *, columns="*", filters=None, order=None, limit=None):
+            self.calls.append((table, columns, filters, order, limit))
+            if table == "crawl_runs":
+                if filters and "id" in filters:
+                    return [self.existing_run] if self.existing_run else []
+                return [self.primary_run] if self.primary_run else []
+            if table == "price_observations":
+                return list(self.existing_observations)
+            if table == "weekly_price_history":
+                return []
+            return super().select(table, columns=columns, filters=filters, order=order, limit=limit)
 
-            def update(self, table, values, *, filters):
-                self.writes.append((table, values, filters))
+        def insert_ignore(self, table, rows):
+            self.writes.append(("insert", table, rows))
 
-        client = DuplicateClient()
+        def update(self, table, values, *, filters):
+            self.writes.append(("update", table, values, filters))
+
+    def test_completed_existing_run_is_a_no_op_before_crawling_or_writing(self):
+        client = self.RunClient(existing_run={
+            "id": "2f02aefb-05e1-58f8-aba8-c2f9b300e0ad",
+            "run_key": "daily-20260911-primary",
+            "status": "success",
+            "completed_at": "2026-09-11T11:05:00+07:00",
+        })
         crawled = []
         now = dt.datetime(2026, 9, 11, 11, tzinfo=self.cloud.LOCAL_TIMEZONE)
 
@@ -262,7 +297,7 @@ class RestAndDuplicateTests(unittest.TestCase):
             run_type="primary",
             now=now,
             dry_run=False,
-            limit=1,
+            limit=0,
             crawl=lambda *_: crawled.append(True),
             backcheck=lambda *_: None,
         )
@@ -270,6 +305,105 @@ class RestAndDuplicateTests(unittest.TestCase):
         self.assertEqual(outcome["status"], "duplicate_noop")
         self.assertEqual(crawled, [])
         self.assertEqual(client.writes, [])
+
+    def test_incomplete_run_resumes_missing_observations_and_finalizes(self):
+        existing = {
+            "id": "existing-fpt-observation",
+            "product_id": "p-active",
+            "retailer_id": "r-fpt",
+            "product_link_id": "l-fpt",
+            "in_stock": True,
+            "fetch_ok": True,
+            "review_status": "confirmed",
+        }
+        client = self.RunClient(
+            existing_run={
+                "id": "2f02aefb-05e1-58f8-aba8-c2f9b300e0ad",
+                "run_key": "daily-20260911-primary",
+                "status": "running",
+                "completed_at": None,
+                "scheduled_for": "2026-09-11T11:00:00+07:00",
+                "started_at": "2026-09-11T11:00:02+07:00",
+            },
+            existing_observations=[existing],
+        )
+        crawled = []
+
+        def crawl(target, _overrides):
+            crawled.append(target.url)
+            return price_check.Result(
+                target.model,
+                target.retailer,
+                target.url,
+                17_190_000,
+                "OK",
+                fetched_at="2026-09-11T11:06:00+07:00",
+                source_method="structured_offer_price",
+                purchase_action="IN_STOCK",
+            )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            outcome = self.cloud.execute_run(
+                client,
+                run_type="primary",
+                now=dt.datetime(2026, 9, 11, 11, tzinfo=self.cloud.LOCAL_TIMEZONE),
+                dry_run=False,
+                limit=0,
+                crawl=crawl,
+                backcheck=lambda *_: None,
+                output_dir=Path(tmp),
+            )
+
+        self.assertEqual(crawled, ["https://shopdunk.test/17e"])
+        observation_insert = next(write for write in client.writes if write[:2] == ("insert", "price_observations"))
+        self.assertEqual([row["product_link_id"] for row in observation_insert[2]], ["l-sd"])
+        self.assertFalse(any(write[:2] == ("insert", "crawl_runs") for write in client.writes))
+        run_update = next(write for write in client.writes if write[:2] == ("update", "crawl_runs"))
+        self.assertEqual(run_update[2]["status"], "success")
+        self.assertEqual(run_update[2]["total_targets"], 2)
+        self.assertEqual(run_update[2]["ok_count"], 2)
+        self.assertEqual(run_update[2]["scheduled_for"], "2026-09-11T11:00:00+07:00")
+        self.assertEqual(run_update[2]["started_at"], "2026-09-11T11:00:02+07:00")
+        self.assertEqual(outcome["status"], "success")
+
+    def test_retry_without_primary_records_safe_no_retry_without_parent_fk(self):
+        client = self.RunClient()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            outcome = self.cloud.execute_run(
+                client,
+                run_type="retry",
+                now=dt.datetime(2026, 9, 11, 11, 30, tzinfo=self.cloud.LOCAL_TIMEZONE),
+                dry_run=False,
+                limit=0,
+                crawl=lambda *_: self.fail("retry without a primary must not crawl"),
+                backcheck=lambda *_: None,
+                output_dir=Path(tmp),
+            )
+
+        run_insert = next(write for write in client.writes if write[:2] == ("insert", "crawl_runs"))
+        run_update = next(write for write in client.writes if write[:2] == ("update", "crawl_runs"))
+        self.assertIsNone(run_insert[2][0]["parent_run_id"])
+        self.assertIsNone(run_update[2]["parent_run_id"])
+        self.assertEqual(run_update[2]["status"], "no_retry")
+        self.assertEqual(outcome["status"], "no_retry")
+
+
+class RunOptionTests(unittest.TestCase):
+    def setUp(self):
+        import cloud_price_check  # noqa: PLC0415
+
+        self.cloud = cloud_price_check
+
+    def test_limit_is_rejected_for_all_canonical_production_runs(self):
+        for run_type in ("primary", "retry", "weekly"):
+            with self.subTest(run_type=run_type):
+                with self.assertRaisesRegex(ValueError, "--limit requires --dry-run or --run-type shadow"):
+                    self.cloud.validate_run_options(run_type, dry_run=False, limit=1)
+
+    def test_limit_is_allowed_for_dry_run_and_shadow(self):
+        self.cloud.validate_run_options("primary", dry_run=True, limit=1)
+        self.cloud.validate_run_options("shadow", dry_run=False, limit=1)
 
 
 class BrowserRuntimeTests(unittest.TestCase):

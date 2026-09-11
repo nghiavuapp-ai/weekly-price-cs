@@ -11,7 +11,7 @@ import re
 import urllib.parse
 import urllib.request
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Callable, Iterable, Mapping, Sequence
 from zoneinfo import ZoneInfo
@@ -48,6 +48,7 @@ class CatalogItem:
     product_id: str
     retailer_id: str
     link_id: str
+    retailer_name: str = ""
 
 
 @dataclass(frozen=True)
@@ -58,6 +59,12 @@ class Catalog:
     @property
     def by_link_id(self) -> dict[str, CatalogItem]:
         return {item.link_id: item for item in self.items}
+
+
+@dataclass(frozen=True)
+class RetrySelection:
+    primary_run_id: str | None
+    items: tuple[CatalogItem, ...]
 
 
 def _stable_id(kind: str, *parts: object) -> str:
@@ -104,6 +111,13 @@ def make_run_identity(run_type: str, when: dt.datetime) -> RunIdentity:
         period=period,
         parent_run_id=parent_run_id,
     )
+
+
+def validate_run_options(run_type: str, *, dry_run: bool, limit: int) -> None:
+    if limit < 0:
+        raise ValueError("--limit cannot be negative")
+    if limit and not dry_run and run_type != "shadow":
+        raise ValueError("--limit requires --dry-run or --run-type shadow")
 
 
 def _default_sender(request: urllib.request.Request, timeout: int) -> object:
@@ -224,10 +238,11 @@ def load_active_catalog(client: SupabaseRestClient) -> Catalog:
             continue
         items.append(
             CatalogItem(
-                target=price_check.Target(product["name"], retailer["name"], link["url"]),
+                target=price_check.Target(product["name"], retailer["code"], link["url"]),
                 product_id=product["id"],
                 retailer_id=retailer["id"],
                 link_id=link["id"],
+                retailer_name=retailer["name"],
             )
         )
     items.sort(key=lambda item: (item.target.model, item.target.retailer, item.target.url))
@@ -240,11 +255,11 @@ def load_active_catalog(client: SupabaseRestClient) -> Catalog:
     return Catalog(tuple(items), override_input)
 
 
-def select_retry_items(
+def load_retry_selection(
     client: SupabaseRestClient,
     catalog: Catalog,
     day: dt.date,
-) -> list[CatalogItem]:
+) -> RetrySelection:
     primary_key = f"daily-{day.strftime('%Y%m%d')}-primary"
     runs = client.select(
         "crawl_runs",
@@ -253,11 +268,12 @@ def select_retry_items(
         limit=1,
     )
     if not runs:
-        return []
+        return RetrySelection(None, ())
+    primary_run_id = runs[0]["id"]
     failures = client.select(
         "price_observations",
         columns="product_link_id,fetch_ok",
-        filters={"run_id": f"eq.{runs[0]['id']}", "fetch_ok": "eq.false"},
+        filters={"run_id": f"eq.{primary_run_id}", "fetch_ok": "eq.false"},
     )
     by_link = catalog.by_link_id
     selected = {
@@ -265,7 +281,15 @@ def select_retry_items(
         for row in failures
         if row.get("fetch_ok") is False and row.get("product_link_id") in by_link
     }
-    return [selected[key] for key in sorted(selected)]
+    return RetrySelection(primary_run_id, tuple(selected[key] for key in sorted(selected)))
+
+
+def select_retry_items(
+    client: SupabaseRestClient,
+    catalog: Catalog,
+    day: dt.date,
+) -> list[CatalogItem]:
+    return list(load_retry_selection(client, catalog, day).items)
 
 
 def _clean_iso(value: str | None, fallback: dt.datetime) -> str:
@@ -395,25 +419,53 @@ def execute_run(
     output_dir: Path = DEFAULT_OUTPUT_DIR,
 ) -> dict:
     """Execute one idempotent cloud crawl and return its upload payload."""
+    validate_run_options(run_type, dry_run=dry_run, limit=limit)
     identity = make_run_identity(run_type, now)
     no_upload = dry_run or run_type == "shadow"
+    existing_run = None
     if not no_upload:
         existing = client.select(
-            "crawl_runs", columns="id,run_key,status", filters={"id": f"eq.{identity.run_id}"}, limit=1
+            "crawl_runs",
+            columns="id,run_key,status,scheduled_for,started_at,completed_at",
+            filters={"id": f"eq.{identity.run_id}"},
+            limit=1,
         )
-        if existing:
+        existing_run = existing[0] if existing else None
+        if existing_run and existing_run.get("status") in {
+            "success", "partial", "failed", "no_retry", "cancelled"
+        }:
             return {"status": "duplicate_noop", "run": existing[0], "observations": []}
 
     catalog = load_active_catalog(client)
-    items = (
-        select_retry_items(client, catalog, identity.period.start)
-        if run_type == "retry"
-        else list(catalog.items)
-    )
+    retry_selection = None
+    if run_type == "retry":
+        retry_selection = load_retry_selection(client, catalog, identity.period.start)
+        identity = replace(identity, parent_run_id=retry_selection.primary_run_id)
+        desired_items = list(retry_selection.items)
+    else:
+        desired_items = list(catalog.items)
+    items = list(desired_items)
     if limit > 0:
         items = items[:limit]
 
-    if not no_upload:
+    existing_observations: list[dict] = []
+    if existing_run:
+        existing_observations = client.select(
+            "price_observations",
+            columns=(
+                "id,product_id,retailer_id,product_link_id,in_stock,fetch_ok,review_status"
+            ),
+            filters={"run_id": f"eq.{identity.run_id}"},
+        )
+        observed_pairs = {
+            (row.get("product_id"), row.get("retailer_id"))
+            for row in existing_observations
+        }
+        items = [
+            item for item in items
+            if (item.product_id, item.retailer_id) not in observed_pairs
+        ]
+    elif not no_upload:
         client.insert_ignore("crawl_runs", [_run_row(identity, now, "running", [])])
 
     results = [crawl(item.target, catalog.overrides) for item in items]
@@ -424,11 +476,21 @@ def execute_run(
         result_to_observation(result, item, identity, fallback_time=now)
         for item, result in zip(items, results)
     ]
-    status = "no_retry" if run_type == "retry" and not items else (
-        "partial" if any(not row["fetch_ok"] for row in observations) else "success"
+    all_observations = [*existing_observations, *observations]
+    status = "no_retry" if run_type == "retry" and not desired_items else (
+        "partial" if any(not row["fetch_ok"] for row in all_observations) else "success"
     )
-    run = _run_row(identity, now, status, observations)
-    payload = {"status": "dry_run" if no_upload else status, "run": run, "observations": observations}
+    run = _run_row(identity, now, status, all_observations)
+    if existing_run:
+        for field in ("scheduled_for", "started_at"):
+            if existing_run.get(field):
+                run[field] = existing_run[field]
+    payload = {
+        "status": "dry_run" if no_upload else status,
+        "run": run,
+        "observations": observations,
+        "resumed": bool(existing_run),
+    }
 
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -454,8 +516,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=0, help="Limit targets after retry selection")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     args = parser.parse_args(argv)
-    if args.limit < 0:
-        parser.error("--limit cannot be negative")
+    try:
+        validate_run_options(args.run_type, dry_run=args.dry_run, limit=args.limit)
+    except ValueError as exc:
+        parser.error(str(exc))
 
     supabase_url = os.environ.get("SUPABASE_URL", "")
     service_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
