@@ -28,9 +28,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      DAILY_SNAPSHOT_GZIP_B64: ${{ inputs.snapshot_gzip_b64 }}
-      DAILY_SNAPSHOT_SHA256: ${{ inputs.snapshot_sha256 }}
-      DAILY_RUN_JSON: ${{ inputs.run_json }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
     steps:
