@@ -407,9 +407,11 @@ def build_daily_snapshot_payload(
         fetch_ok = status in {"OK", "OOS"}
         in_stock = True if status == "OK" and price is not None else False if status == "OOS" else None
         risks = _risk_flags(source.get("risk_flags"))
-        requires_review = (
+        confidence = _clean_text(source.get("confidence")).upper()
+        verified_oos = status == "OOS" and confidence in {"VERIFIED_OOS", "OOS_CONFIRMED"}
+        requires_review = not verified_oos and (
             not fetch_ok
-            or _clean_text(source.get("confidence")).upper() == "REVIEW"
+            or confidence == "REVIEW"
             or bool(set(risks) & REVIEW_STATUS_FLAGS)
         )
         record_id = _observation_id(run_id, product["id"], retailer["id"])

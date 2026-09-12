@@ -102,6 +102,27 @@ class CatalogPayloadTests(unittest.TestCase):
 
 
 class HistoricalPayloadTests(unittest.TestCase):
+    def test_verified_oos_is_confirmed_even_when_audit_flags_are_present(self):
+        run = {
+            "run_id": "daily-20260912-primary",
+            "run_type": "primary",
+            "completed_at": "2026-09-12T11:12:00+07:00",
+            "status": "SUCCESS",
+        }
+        rows = [{
+            "model": "iPhone 16e 128GB",
+            "retailer": "FPT",
+            "url": "https://example.test/iphone-16e",
+            "status": "OOS",
+            "confidence": "VERIFIED_OOS",
+            "risk_flags": "WARN_OUTLIER|WARN_RENDER_STOCK_CONFIRMED|WARN_WEEK_CHANGE",
+            "fetched_at": "2026-09-12T11:02:00+07:00",
+        }]
+
+        payload = build_daily_snapshot_payload(run, rows)
+
+        self.assertEqual(payload["price_observations"][0]["review_status"], "confirmed")
+
     def test_builds_weekly_price_and_oos_observations_with_source_lineage(self):
         rows = [
             {
