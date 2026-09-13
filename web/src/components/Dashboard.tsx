@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react'
 import type { DashboardSnapshot } from '../data/data-source'
 import { filterRows, selectDailyWeek, selectWeeklyWindow, type Granularity } from '../domain/price-data'
 import { DashboardToolbar } from './DashboardToolbar'
-import { HealthWarnings } from './HealthWarnings'
 import { KpiStrip } from './KpiStrip'
 import { PartnerComparison } from './PartnerComparison'
 import { PriceMatrix } from './PriceMatrix'
@@ -11,11 +10,10 @@ import { TrendChart } from './TrendChart'
 
 export interface DashboardProps {
   snapshot: DashboardSnapshot
-  onExport: (granularity: Granularity) => void
   onOpenAdmin: () => void
 }
 
-export function Dashboard({ snapshot, onExport, onOpenAdmin }: DashboardProps) {
+export function Dashboard({ snapshot, onOpenAdmin }: DashboardProps) {
   const weeks = useMemo(() => [...new Set(snapshot.weeklyRows.map((row) => row.weekId).filter(Boolean) as string[])].sort((a, b) => {
     const left = snapshot.weeklyRows.find((row) => row.weekId === a)?.date ?? ''
     const right = snapshot.weeklyRows.find((row) => row.weekId === b)?.date ?? ''
@@ -59,13 +57,11 @@ export function Dashboard({ snapshot, onExport, onOpenAdmin }: DashboardProps) {
       dailyAvailable={dates.length > 0} onGranularity={selectGranularity} onWeek={setWeek} onDate={setDate}
       onCategory={(value) => { setCategory(value); setModel('All') }} onModel={setModel} onPartner={setPartner} />
     <div className="content">
-      <HealthWarnings health={snapshot.health} pendingCount={snapshot.pendingRows.length} />
       <KpiStrip rows={current} priorRows={prior} allPartnerCount={partners.length} granularity={granularity} />
       {model === 'All' ? <PriceMatrix rows={current} priorRows={prior} partners={partner === 'All' ? partners : [partner]} periodLabel={period} granularityLabel={granularity === 'weekly' ? 'tuần' : 'ngày'} /> : <>
         <TrendChart rows={detailHistory} model={model} granularity={granularity} dailyWeeks={dailyWeeks} onDrillDown={drillDown} />
         <PartnerComparison rows={current} priorRows={prior} model={model} />
       </>}
-      <div className="footer-actions"><button type="button" onClick={() => onExport(granularity)}>Tải Excel {granularity === 'weekly' ? 'Weekly' : 'Daily'}</button></div>
     </div>
     <footer><span>Dữ liệu: {snapshot.source === 'supabase' ? 'Realtime' : 'Bản xem trước'}</span><button className="quiet-admin" type="button" onClick={onOpenAdmin} aria-label="Mở công cụ sửa giá">Sửa giá</button></footer>
   </main>

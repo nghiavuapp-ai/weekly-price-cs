@@ -56,6 +56,7 @@ describe('PriceMatrix', () => {
     fireEvent.mouseEnter(marker)
 
     const tooltip = screen.getByRole('tooltip')
+    expect(tooltip).toHaveTextContent('Lần check trước · 12/09/2026')
     expect(tooltip).toHaveTextContent('18 tr → 19 tr')
     expect(tooltip).toHaveTextContent('↑ Tăng 1 tr')
     expect(tooltip).not.toHaveTextContent('%')
@@ -98,5 +99,17 @@ describe('PriceMatrix', () => {
 
     fireEvent.mouseEnter(screen.getByRole('button', { name: /FPT giảm 0,5 tr/i }))
     expect(screen.getByRole('tooltip')).toHaveTextContent('↓ Giảm 0,5 tr')
+  })
+
+  it('labels a weekly comparison by the prior week instead of its source timestamp', () => {
+    render(<PriceMatrix
+      rows={[makeRow({ granularity: 'weekly', periodKey: 'W11Q4FY26', weekId: 'W11Q4FY26' })]}
+      priorRows={[makeRow({ granularity: 'weekly', periodKey: 'W10Q4FY26', weekId: 'W10Q4FY26', observedAt: '2026-08-30T12:00:00+07:00', priceVnd: 18_000_000 })]}
+      partners={['FPT']} periodLabel="W11Q4FY26" granularityLabel="tuần" />)
+
+    fireEvent.mouseEnter(screen.getByRole('button', { name: /FPT tăng 1 tr/i }))
+    const tooltip = screen.getByRole('tooltip')
+    expect(tooltip).toHaveTextContent('Lần check trước · W10Q4FY26')
+    expect(tooltip).not.toHaveTextContent('30/08/2026')
   })
 })

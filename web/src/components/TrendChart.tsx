@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Granularity, PriceRow } from '../domain/price-data'
 import { compactPrice } from './PriceMatrix'
 
@@ -12,6 +13,7 @@ interface TrendChartProps {
 }
 
 export function TrendChart({ rows, model, granularity, dailyWeeks, onDrillDown }: TrendChartProps) {
+  const [activePeriod, setActivePeriod] = useState<string | null>(null)
   const periods = [...new Set(rows.map((row) => granularity === 'weekly' ? row.weekId : row.date).filter(Boolean) as string[])]
   const partners = [...new Set(rows.map((row) => row.partner))]
   const values = rows.flatMap((row) => row.priceVnd != null ? [row.priceVnd] : [])
@@ -24,7 +26,7 @@ export function TrendChart({ rows, model, granularity, dailyWeeks, onDrillDown }
     <section className="section panel" aria-labelledby="trend-title">
       <div className="section-head"><div><h2 id="trend-title">{granularity === 'weekly' ? 'Diễn biến giá theo Partner' : 'Diễn biến giá theo ngày'}</h2><p>{model} · {periods.length}/{granularity === 'weekly' ? '13 tuần' : '7 ngày'}</p></div><div className="legend">{partners.map((partner) => <span key={partner}><i className="dot" style={{ background: colors[partner] ?? '#60776c' }} />{partner}</span>)}{granularity === 'daily' && <span>○ Chưa kiểm tra lại</span>}</div></div>
       <div className="chart-wrap">
-        {values.length ? <svg viewBox="0 0 1000 310" role="img" aria-label={`Biểu đồ ${model}`}>
+        {values.length ? <div className="chart-stage"><svg viewBox="0 0 1000 310" role="img" aria-label={`Biểu đồ ${model}`}>
           {[0, 1, 2, 3, 4].map((index) => <line key={index} x1="60" x2="940" y1={30 + index * 58} y2={30 + index * 58} stroke="#e3ebe4" />)}
           {partners.map((partner) => {
             const points = periods.flatMap((period) => {
@@ -35,10 +37,26 @@ export function TrendChart({ rows, model, granularity, dailyWeeks, onDrillDown }
           })}
           {rows.filter((row) => row.priceVnd != null).map((row) => {
             const period = granularity === 'weekly' ? row.weekId as string : row.date
-            return <circle key={row.id} cx={x(period)} cy={y(row.priceVnd as number)} r={row.stale ? 6 : 5} fill={row.stale ? '#fff' : colors[row.partner] ?? '#60776c'} stroke={colors[row.partner] ?? '#60776c'} strokeWidth={row.stale ? 3 : 1.5}><title>{row.partner}: {compactPrice(row.priceVnd)}</title></circle>
+            return <circle key={row.id} cx={x(period)} cy={y(row.priceVnd as number)} r={row.stale ? 6 : 5} fill={row.stale ? '#fff' : colors[row.partner] ?? '#60776c'} stroke={colors[row.partner] ?? '#60776c'} strokeWidth={row.stale ? 3 : 1.5} />
           })}
           {periods.map((period) => <text key={period} x={x(period)} y="300" textAnchor="middle" fill="#667b70" fontSize="11">{granularity === 'weekly' ? period.replace(/Q\dFY\d+/, '') : period.slice(5)}</text>)}
-        </svg> : <div className="chart-empty">Không có giá hợp lệ cho model này.</div>}
+        </svg><div className="chart-hover-layer">{periods.map((period, index) => {
+          const periodRows = partners.map((partner) => rows.find((row) => row.partner === partner && (granularity === 'weekly' ? row.weekId : row.date) === period))
+          const width = Math.min(10, Math.max(4, 88 / Math.max(periods.length, 1)))
+          return <button type="button" key={period} className={`chart-period-hit${activePeriod === period ? ' active' : ''}`}
+            style={{ left: `${x(period) / 10}%`, width: `${width}%` }} aria-label={`Xem giá ${period}`}
+            onMouseEnter={() => setActivePeriod(period)} onMouseLeave={() => setActivePeriod(null)}
+            onFocus={() => setActivePeriod(period)} onBlur={() => setActivePeriod(null)} onClick={() => setActivePeriod(period)}>
+            {activePeriod === period && <span className={`chart-period-tooltip${index >= periods.length - 2 ? ' align-right' : ''}`} role="tooltip">
+              <strong>{period}</strong>
+              {periodRows.map((row, partnerIndex) => <span className="chart-tooltip-row" key={partners[partnerIndex]}>
+                <i className="dot" style={{ background: colors[partners[partnerIndex]] ?? '#60776c' }} />
+                <span>{row?.partnerName ?? partners[partnerIndex]}</span>
+                <b>{!row ? '—' : row.stockStatus === 'oos' ? 'OOS' : compactPrice(row.priceVnd)}</b>
+              </span>)}
+            </span>}
+          </button>
+        })}</div></div> : <div className="chart-empty">Không có giá hợp lệ cho model này.</div>}
       </div>
       {granularity === 'weekly' && <div className="drill-actions">{periods.filter((period) => dailyWeeks.has(period)).map((period) => <button type="button" key={period} onClick={() => onDrillDown(period)} aria-label={`Xem Daily ${model} · ${period}`}>Xem Daily · {period}</button>)}</div>}
     </section>

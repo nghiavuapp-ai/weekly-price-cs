@@ -17,14 +17,10 @@ function changeKey(model: string, partner: string) {
   return `${model}::${partner}`
 }
 
-function observedLabel(value: string) {
-  const date = new Date(value)
-  if (Number.isNaN(date.valueOf())) return value
-  return new Intl.DateTimeFormat('vi-VN', {
-    timeZone: 'Asia/Ho_Chi_Minh',
-    day: '2-digit', month: '2-digit', year: 'numeric',
-    hour: '2-digit', minute: '2-digit',
-  }).format(date)
+function priorPeriodLabel(row: PriceRow) {
+  if (row.granularity === 'weekly') return row.periodKey
+  const [year, month, day] = row.periodKey.split('-')
+  return year && month && day ? `${day}/${month}/${year}` : row.periodKey
 }
 
 export function PriceMatrix({ rows, priorRows, partners, periodLabel, granularityLabel }: PriceMatrixProps) {
@@ -62,7 +58,7 @@ export function PriceMatrix({ rows, priorRows, partners, periodLabel, granularit
                 ↕
                 {activeChange === key && <span className="change-tooltip" id={`change-${row.id}`} role="tooltip">
                   <strong>{partnerLabel}</strong>
-                  <span>Lần check trước · {observedLabel(prior.observedAt)}</span>
+                  <span>Lần check trước · {priorPeriodLabel(prior)}</span>
                   <span>{compactPrice(prior.priceVnd)} → {compactPrice(row.priceVnd)}</span>
                   <b className={delta > 0 ? 'up' : 'down'}>{delta > 0 ? '↑ Tăng' : '↓ Giảm'} {compactPrice(Math.abs(delta))}</b>
                 </span>}

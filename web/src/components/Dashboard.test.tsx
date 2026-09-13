@@ -31,7 +31,7 @@ const snapshot: DashboardSnapshot = {
 describe('Dashboard', () => {
   it('opens on the latest Weekly matrix and drills a selected model into its available Daily week', async () => {
     const user = userEvent.setup()
-    render(<Dashboard snapshot={snapshot} onExport={vi.fn()} onOpenAdmin={vi.fn()} />)
+    render(<Dashboard snapshot={snapshot} onOpenAdmin={vi.fn()} />)
 
     expect(screen.getByRole('heading', { name: 'Weekly Price' })).toBeInTheDocument()
     expect(screen.getByRole('combobox', { name: 'Tuần' })).toHaveValue('W11Q4FY26')
@@ -44,5 +44,11 @@ describe('Dashboard', () => {
     expect(screen.getByRole('heading', { name: 'Daily Price' })).toBeInTheDocument()
     expect(screen.getByRole('combobox', { name: 'Ngày' })).toHaveValue('2026-09-10')
     expect(screen.getByText('Chưa kiểm tra lại', { exact: false })).toBeInTheDocument()
+  })
+
+  it('keeps review warnings and Excel downloads out of the public dashboard', () => {
+    render(<Dashboard snapshot={{ ...snapshot, pendingRows: [priceRow()], health: [{ check_name: 'daily_stale', healthy: false, detail: {} }] }} onOpenAdmin={vi.fn()} />)
+    expect(screen.queryByText('Cần chú ý')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Tải Excel/i })).not.toBeInTheDocument()
   })
 })

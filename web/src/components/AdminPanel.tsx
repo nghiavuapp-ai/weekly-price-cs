@@ -3,6 +3,7 @@ import { useState, type FormEvent } from 'react'
 import type { ConfigTable } from '../data/admin-repository'
 import type { DashboardSnapshot } from '../data/data-source'
 import { validateCorrection, type CorrectionPayload } from '../domain/corrections'
+import type { Granularity } from '../domain/price-data'
 
 interface Props {
   open: boolean
@@ -13,6 +14,7 @@ interface Props {
   onSignOut: () => Promise<void> | void
   onCorrection: (payload: CorrectionPayload) => Promise<void>
   onConfigMutation: (table: ConfigTable, values: Record<string, unknown>, id?: string) => Promise<void>
+  onExport: (granularity: Granularity) => void
 }
 
 export function AdminPanel(props: Props) {
@@ -47,7 +49,7 @@ export function AdminPanel(props: Props) {
         {message && <p className="form-message" role="alert">{message}</p>}
         <button className="primary" type="submit" disabled={!password || busy}>{busy ? 'Đang kiểm tra…' : 'Mở khóa'}</button>
       </form> : <>
-        <div className="admin-title"><div><p className="eyebrow">ADMIN</p><h2 id="admin-title">Quản trị Price Check</h2></div><button type="button" onClick={() => void props.onSignOut()}>Đăng xuất</button></div>
+        <div className="admin-title"><div><p className="eyebrow">ADMIN</p><h2 id="admin-title">Quản trị Price Check</h2></div><div className="admin-title-actions"><button className="admin-download" type="button" onClick={() => props.onExport('daily')}>Tải Excel Daily</button><button type="button" onClick={() => void props.onSignOut()}>Đăng xuất</button></div></div>
         <div className="admin-tabs" role="tablist">
           <button role="tab" aria-selected={tab === 'review'} onClick={() => setTab('review')}>Duyệt giá</button>
           <button role="tab" aria-selected={tab === 'catalog'} onClick={() => setTab('catalog')}>Danh mục crawl</button>

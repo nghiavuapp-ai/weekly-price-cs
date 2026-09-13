@@ -45,8 +45,9 @@ export default function App() {
   if (!snapshot) return <main className="loading"><span className="spinner" />Đang tải dữ liệu…</main>
   return <>
     {error && <div className="offline-banner">Đang dùng dữ liệu dự phòng: {error}</div>}
-    <Dashboard snapshot={snapshot} onExport={(value) => void actions.export(value)} onOpenAdmin={() => setAdminOpen(true)} />
+    <Dashboard snapshot={snapshot} onOpenAdmin={() => setAdminOpen(true)} />
     <AdminPanel open={adminOpen} authenticated={Boolean(session)} snapshot={snapshot} onClose={() => setAdminOpen(false)}
-      onSignIn={actions.signIn} onSignOut={actions.signOut} onCorrection={actions.correction} onConfigMutation={actions.config} />
+      onSignIn={actions.signIn} onSignOut={actions.signOut} onCorrection={actions.correction} onConfigMutation={actions.config}
+      onExport={(value) => void actions.export(value)} />
   </>
 }

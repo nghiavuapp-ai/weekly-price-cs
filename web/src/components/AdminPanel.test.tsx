@@ -16,7 +16,7 @@ describe('AdminPanel', () => {
     const onSignIn = vi.fn().mockResolvedValue(undefined)
     const user = userEvent.setup()
     render(<AdminPanel open authenticated={false} snapshot={snapshot} onClose={vi.fn()} onSignIn={onSignIn}
-      onSignOut={vi.fn()} onCorrection={vi.fn()} onConfigMutation={vi.fn()} />)
+      onSignOut={vi.fn()} onCorrection={vi.fn()} onConfigMutation={vi.fn()} onExport={vi.fn()} />)
 
     expect(screen.queryByLabelText('Email')).not.toBeInTheDocument()
     await user.type(screen.getByLabelText('Mật khẩu'), 'secret-value')
@@ -26,7 +26,7 @@ describe('AdminPanel', () => {
 
   it('shows pending review and configuration tools after authentication', () => {
     render(<AdminPanel open authenticated snapshot={snapshot} onClose={vi.fn()} onSignIn={vi.fn()}
-      onSignOut={vi.fn()} onCorrection={vi.fn()} onConfigMutation={vi.fn()} />)
+      onSignOut={vi.fn()} onCorrection={vi.fn()} onConfigMutation={vi.fn()} onExport={vi.fn()} />)
     expect(screen.getByRole('heading', { name: 'Quản trị Price Check' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Duyệt giá' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Danh mục crawl' })).toBeInTheDocument()
@@ -41,12 +41,21 @@ describe('AdminPanel', () => {
       retailers: [{ id: 'retailer-1', code: 'FPT', name: 'FPT Shop', active: true }],
     }
     render(<AdminPanel open authenticated snapshot={configured} onClose={vi.fn()} onSignIn={vi.fn()}
-      onSignOut={vi.fn()} onCorrection={vi.fn()} onConfigMutation={onConfigMutation} />)
+      onSignOut={vi.fn()} onCorrection={vi.fn()} onConfigMutation={onConfigMutation} onExport={vi.fn()} />)
     await user.click(screen.getByRole('tab', { name: 'Danh mục crawl' }))
     await user.type(screen.getByLabelText('URL sản phẩm'), 'https://example.com/iphone-17')
     await user.click(screen.getByRole('button', { name: 'Thêm URL' }))
     expect(onConfigMutation).toHaveBeenCalledWith('product_links', {
       product_id: 'product-1', retailer_id: 'retailer-1', url: 'https://example.com/iphone-17', active: true,
     })
+  })
+
+  it('keeps the Daily Excel download inside the authenticated admin tool', async () => {
+    const onExport = vi.fn()
+    const user = userEvent.setup()
+    render(<AdminPanel open authenticated snapshot={snapshot} onClose={vi.fn()} onSignIn={vi.fn()}
+      onSignOut={vi.fn()} onCorrection={vi.fn()} onConfigMutation={vi.fn()} onExport={onExport} />)
+    await user.click(screen.getByRole('button', { name: 'Tải Excel Daily' }))
+    expect(onExport).toHaveBeenCalledWith('daily')
   })
 })
