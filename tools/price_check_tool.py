@@ -385,7 +385,16 @@ def request_html(url: str, timeout: int = 30) -> str:
     )
     context = ssl_context()
     if "cellphones.com.vn" not in url:
-        with urlopen(request, timeout=timeout, context=context) as response:
+        fpt_proxy_url = os.environ.get("FPT_PROXY_URL", "").strip()
+        if fpt_proxy_url and "fptshop.com.vn" in url.lower():
+            opener = urllib.request.build_opener(
+                urllib.request.ProxyHandler({"http": fpt_proxy_url, "https": fpt_proxy_url}),
+                urllib.request.HTTPSHandler(context=context),
+            )
+            response_context = opener.open(request, timeout=timeout)
+        else:
+            response_context = urlopen(request, timeout=timeout, context=context)
+        with response_context as response:
             charset = response.headers.get_content_charset() or "utf-8"
             return response.read().decode(charset, errors="replace")
 

@@ -31,6 +31,7 @@ jobs:
       RUN_TYPE: ${{ github.event_name == 'schedule' && 'shadow' || inputs.run_type }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      FPT_PROXY_URL: ${{ secrets.FPT_PROXY_URL }}
       PYTHONUNBUFFERED: "1"
     steps:
       - name: Check out source

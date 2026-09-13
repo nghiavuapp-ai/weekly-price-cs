@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import os
 import tempfile
 import subprocess
 import sys
@@ -55,6 +56,37 @@ class WeekRolloverTests(unittest.TestCase):
 
 
 class AvailabilityTests(unittest.TestCase):
+    def test_fpt_request_uses_configured_cloud_proxy(self):
+        class Headers:
+            @staticmethod
+            def get_content_charset():
+                return "utf-8"
+
+        class Response:
+            headers = Headers()
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            @staticmethod
+            def read():
+                return b"<html>FPT</html>"
+
+        opener = mock.Mock()
+        opener.open.return_value = Response()
+        with mock.patch.dict(os.environ, {"FPT_PROXY_URL": "http://proxy.test:8000"}), \
+             mock.patch.object(price_check_tool.urllib.request, "build_opener", return_value=opener) as build_opener, \
+             mock.patch.object(price_check_tool, "urlopen") as direct_open:
+            result = price_check_tool.request_html("https://fptshop.com.vn/dien-thoai/iphone-15")
+
+        self.assertEqual(result, "<html>FPT</html>")
+        direct_open.assert_not_called()
+        self.assertTrue(any(isinstance(handler, price_check_tool.urllib.request.ProxyHandler)
+                            for handler in build_opener.call_args.args))
+
     def test_price_parser_handles_display_and_decimal_integer(self):
         self.assertEqual(price_check_tool.parse_price_number("16.990.000₫"), 16_990_000)
         self.assertEqual(price_check_tool.parse_price_number("16990000.0"), 16_990_000)

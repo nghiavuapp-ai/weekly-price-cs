@@ -20,6 +20,7 @@ class AutomationConfigTests(unittest.TestCase):
         self.assertIn("Compare shadow with local Daily reference", workflow)
         self.assertIn('if: ${{ env.RUN_TYPE == \'shadow\' }}', workflow)
         self.assertIn("python tools/compare_shadow_to_daily.py --shadow-dir outputs/cloud", workflow)
+        self.assertIn("FPT_PROXY_URL: ${{ secrets.FPT_PROXY_URL }}", workflow)
 
     def test_workflow_is_manual_idempotent_and_least_privilege(self):
         workflow = (ROOT / ".github/workflows/price-check.yml").read_text(encoding="utf-8")
