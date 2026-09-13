@@ -57,18 +57,26 @@ h1 { margin: 0; font-size: 21px; }
 .scroll { overflow: auto; }
 table { width: 100%; border-collapse: collapse; white-space: nowrap; }
 th { padding: 11px 15px; color: #607269; background: #edf1ec; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; text-align: right; }
-th:first-child, td:first-child { position: sticky; left: 0; z-index: 1; text-align: left; }
-th:first-child { background: #edf1ec; }
 td { position: relative; padding: 12px 15px; border-bottom: 1px solid #e8ede8; text-align: right; font-size: 13px; font-variant-numeric: tabular-nums; }
-td:first-child { min-width: 280px; color: #24483a; background: var(--paper); font-weight: 600; }
+.matrix-table th:first-child, .matrix-table td:first-child { position: sticky; left: 0; z-index: 1; text-align: left; }
+.matrix-table th:first-child { background: #edf1ec; }
+.matrix-table td:first-child { min-width: 280px; color: #24483a; background: var(--paper); font-weight: 600; }
+.compare-table .rank-column { width: 64px; }
+.compare-table th:first-child, .compare-table td:first-child { width: 64px; min-width: 64px; max-width: 64px; text-align: center; }
+.compare-table th:nth-child(2), .compare-table td:nth-child(2) { text-align: left; }
 tr:last-child td { border-bottom: 0; }
 .matrix-table td.lowest { color: var(--green); background: #e9f4eb; font-weight: 800; }
 .matrix-table td.missing { color: #a8b4ae; }
 .matrix-table td.oos { color: #a0503e; background: #fff1ed; font-weight: 700; }
 td.stale { background-image: repeating-linear-gradient(135deg, transparent 0 5px, rgba(112,128,119,.05) 5px 10px); }
 td small, .stale-label { display: block; margin-top: 4px; color: #8a6556; font-size: 9px; font-weight: 500; }
-.warning-dot { display: inline-grid; place-items: center; width: 16px; height: 16px; margin-left: 6px; color: #6f4300; background: #ffd98a; border-radius: 50%; font-size: 10px; font-weight: 800; }
-.pending { box-shadow: inset 0 -2px #e7ad45; }
+.change-marker { position: relative; display: inline-grid; place-items: center; width: 17px; height: 17px; margin-left: 6px; padding: 0; color: #6f4300; background: #ffd98a; border: 0; border-radius: 50%; font-size: 10px; font-weight: 800; vertical-align: 1px; }
+.change-marker:focus-visible { outline: 2px solid #b56b00; outline-offset: 2px; }
+.change-tooltip { position: absolute; right: -8px; bottom: calc(100% + 10px); z-index: 8; display: grid; gap: 5px; min-width: 230px; padding: 12px 14px; color: #f8fffb; background: #14372d; border-radius: 10px; box-shadow: 0 12px 30px rgba(12,42,34,.24); text-align: left; white-space: nowrap; font-size: 11px; font-weight: 500; }
+.change-tooltip::after { content: ''; position: absolute; right: 10px; top: 100%; border: 6px solid transparent; border-top-color: #14372d; }
+.change-tooltip strong { color: #fff; font-size: 12px; }
+.change-tooltip .up { color: #ffad96; }
+.change-tooltip .down { color: #9ee0bd; }
 .empty, .empty-state { color: var(--muted); text-align: center !important; }
 .rank { display: inline-grid; place-items: center; width: 24px; height: 24px; color: #fff; background: var(--green); border-radius: 50%; font-size: 11px; }
 .gap, .up { color: #a55838; }.down { color: var(--green); }

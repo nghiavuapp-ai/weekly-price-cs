@@ -61,7 +61,7 @@ export function Dashboard({ snapshot, onExport, onOpenAdmin }: DashboardProps) {
     <div className="content">
       <HealthWarnings health={snapshot.health} pendingCount={snapshot.pendingRows.length} />
       <KpiStrip rows={current} priorRows={prior} allPartnerCount={partners.length} granularity={granularity} />
-      {model === 'All' ? <PriceMatrix rows={current} partners={partner === 'All' ? partners : [partner]} periodLabel={period} granularityLabel={granularity === 'weekly' ? 'tuần' : 'ngày'} /> : <>
+      {model === 'All' ? <PriceMatrix rows={current} priorRows={prior} partners={partner === 'All' ? partners : [partner]} periodLabel={period} granularityLabel={granularity === 'weekly' ? 'tuần' : 'ngày'} /> : <>
         <TrendChart rows={detailHistory} model={model} granularity={granularity} dailyWeeks={dailyWeeks} onDrillDown={drillDown} />
         <PartnerComparison rows={current} priorRows={prior} model={model} />
       </>}
