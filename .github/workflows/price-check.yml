@@ -52,6 +52,9 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Run Price Check
         run: python tools/cloud_price_check.py --run-type "$RUN_TYPE"
+      - name: Compare shadow with local Daily reference
+        if: ${{ env.RUN_TYPE == 'shadow' }}
+        run: python tools/compare_shadow_to_daily.py --shadow-dir outputs/cloud
       - name: Upload crawl evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

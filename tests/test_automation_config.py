@@ -14,6 +14,13 @@ class AutomationConfigTests(unittest.TestCase):
         self.assertIn('timezone: "Asia/Ho_Chi_Minh"', workflow)
         self.assertIn("github.event_name == 'schedule' && 'shadow' || inputs.run_type", workflow)
 
+    def test_shadow_workflow_compares_cloud_output_with_same_day_daily_reference(self):
+        workflow = (ROOT / ".github" / "workflows" / "price-check.yml").read_text(encoding="utf-8")
+
+        self.assertIn("Compare shadow with local Daily reference", workflow)
+        self.assertIn('if: ${{ env.RUN_TYPE == \'shadow\' }}', workflow)
+        self.assertIn("python tools/compare_shadow_to_daily.py --shadow-dir outputs/cloud", workflow)
+
     def test_workflow_is_manual_idempotent_and_least_privilege(self):
         workflow = (ROOT / ".github/workflows/price-check.yml").read_text(encoding="utf-8")
         self.assertIn("workflow_dispatch:", workflow)
