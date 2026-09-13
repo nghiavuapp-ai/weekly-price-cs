@@ -12,12 +12,15 @@ on:
           - retry
           - weekly
           - shadow
+  schedule:
+    - cron: '17 13 * * *'
+      timezone: "Asia/Ho_Chi_Minh"
 
 permissions:
   contents: read
 
 concurrency:
-  group: price-check-${{ inputs.run_type }}
+  group: price-check-${{ github.event_name == 'schedule' && 'shadow' || inputs.run_type }}
   cancel-in-progress: false
 
 jobs:
@@ -25,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
+      RUN_TYPE: ${{ github.event_name == 'schedule' && 'shadow' || inputs.run_type }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       PYTHONUNBUFFERED: "1"
@@ -47,13 +51,12 @@ jobs:
           npm ci
           npx playwright install --with-deps chromium
       - name: Run Price Check
-        run: python tools/cloud_price_check.py --run-type "${{ inputs.run_type }}"
+        run: python tools/cloud_price_check.py --run-type "$RUN_TYPE"
       - name: Upload crawl evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: price-check-${{ inputs.run_type }}-${{ github.run_id }}
+          name: price-check-${{ github.event_name == 'schedule' && 'shadow' || inputs.run_type }}-${{ github.run_id }}
           path: outputs/cloud/
           if-no-files-found: warn
           retention-days: 14
-

@@ -7,6 +7,13 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 
 class AutomationConfigTests(unittest.TestCase):
+    def test_workflow_schedules_daily_shadow_after_the_local_validation_window(self):
+        workflow = (ROOT / ".github/workflows/price-check.yml").read_text(encoding="utf-8")
+        self.assertIn("schedule:", workflow)
+        self.assertIn("cron: '17 13 * * *'", workflow)
+        self.assertIn('timezone: "Asia/Ho_Chi_Minh"', workflow)
+        self.assertIn("github.event_name == 'schedule' && 'shadow' || inputs.run_type", workflow)
+
     def test_workflow_is_manual_idempotent_and_least_privilege(self):
         workflow = (ROOT / ".github/workflows/price-check.yml").read_text(encoding="utf-8")
         self.assertIn("workflow_dispatch:", workflow)
