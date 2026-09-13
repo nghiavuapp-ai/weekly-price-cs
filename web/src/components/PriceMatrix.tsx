@@ -55,7 +55,7 @@ export function PriceMatrix({ rows, priorRows, partners, periodLabel, granularit
                 onFocus={() => setActiveChange(key)}
                 onBlur={() => setActiveChange(null)}
               >
-                ↕
+                !
                 {activeChange === key && <span className="change-tooltip" id={`change-${row.id}`} role="tooltip">
                   <strong>{partnerLabel}</strong>
                   <span>Lần check trước · {priorPeriodLabel(prior)}</span>
@@ -64,7 +64,7 @@ export function PriceMatrix({ rows, priorRows, partners, periodLabel, granularit
                 </span>}
               </button> : null
               if (row.stockStatus === 'oos') return <td className="oos" key={partners[index]}>OOS{row.stale && <small>Chưa kiểm tra lại · {row.observedDate}</small>}</td>
-              return <td className={`${row.priceVnd === lowest ? 'lowest ' : ''}${row.stale ? 'stale ' : ''}`} key={partners[index]}>{compactPrice(row.priceVnd)}{marker}{row.stale && <small>Chưa kiểm tra lại · {row.observedDate}</small>}</td>
+              return <td className={`${row.priceVnd === lowest ? 'lowest ' : ''}${row.stale ? 'stale ' : ''}${changed ? 'price-changed ' : ''}`} key={partners[index]}>{compactPrice(row.priceVnd)}{marker}{row.stale && <small>Chưa kiểm tra lại · {row.observedDate}</small>}</td>
             })}</tr>
           }) : <tr><td className="empty" colSpan={partners.length + 1}>Không có dữ liệu cho bộ lọc hiện tại.</td></tr>}</tbody>
         </table>

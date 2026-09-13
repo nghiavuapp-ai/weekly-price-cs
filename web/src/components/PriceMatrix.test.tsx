@@ -53,6 +53,8 @@ describe('PriceMatrix', () => {
     )
 
     const marker = screen.getByRole('button', { name: /FPT tăng 1 tr/i })
+    expect(marker).toHaveTextContent('!')
+    expect(marker.closest('td')).toHaveClass('price-changed')
     fireEvent.mouseEnter(marker)
 
     const tooltip = screen.getByRole('tooltip')
