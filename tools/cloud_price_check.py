@@ -238,7 +238,11 @@ def load_active_catalog(client: SupabaseRestClient) -> Catalog:
             continue
         items.append(
             CatalogItem(
-                target=price_check.Target(product["name"], retailer["code"], link["url"]),
+                target=price_check.Target(
+                    product["name"],
+                    price_check.normalize_name(retailer["code"]),
+                    link["url"],
+                ),
                 product_id=product["id"],
                 retailer_id=retailer["id"],
                 link_id=link["id"],

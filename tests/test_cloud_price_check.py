@@ -100,7 +100,7 @@ class CatalogAndRetryTests(unittest.TestCase):
             [(item.target.model, item.target.retailer, item.target.url) for item in catalog.items],
             [
                 ("iPhone 17e 256GB", "FPT", "https://fpt.test/17e"),
-                ("iPhone 17e 256GB", "SHOPDUNK", "https://shopdunk.test/17e"),
+                ("iPhone 17e 256GB", "Shopdunk", "https://shopdunk.test/17e"),
             ],
         )
         self.assertEqual(catalog.overrides, {"https://fpt.test/17e": (17_290_000, "Confirmed")})
@@ -142,6 +142,12 @@ class CatalogAndRetryTests(unittest.TestCase):
 
         self.assertEqual(fpt.target.retailer, "FPT")
         self.assertEqual(fpt.retailer_name, "FPT Vietnam Display Name")
+
+    def test_uppercase_database_code_is_normalized_for_site_specific_parser_rules(self):
+        catalog = self.cloud.load_active_catalog(self.client)
+        shopdunk = next(item for item in catalog.items if item.link_id == "l-sd")
+
+        self.assertEqual(shopdunk.target.retailer, "Shopdunk")
 
 
 class ObservationTests(unittest.TestCase):
