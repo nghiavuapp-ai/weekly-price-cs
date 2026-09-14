@@ -87,8 +87,7 @@ td small, .stale-label { display: block; margin-top: 4px; color: #8a6556; font-s
 .chart-wrap svg { width: 100%; max-height: 330px; }
 .chart-hover-layer { position: absolute; inset: 0; }
 .chart-period-hit { position: absolute; top: 0; bottom: 28px; z-index: 2; padding: 0; border: 0; background: transparent; transform: translateX(-50%); cursor: crosshair; }
-.chart-period-hit::after { content: ''; position: absolute; left: 50%; top: 18px; bottom: 8px; border-left: 1px dashed transparent; }
-.chart-period-hit.active::after, .chart-period-hit:focus-visible::after { border-left-color: rgba(23,54,44,.34); }
+.chart-active-guide { stroke: rgba(23,54,44,.34); stroke-width: 1; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; pointer-events: none; }
 .chart-period-hit:focus-visible { outline: 0; }
 .chart-period-tooltip { position: absolute; left: 50%; top: 18px; z-index: 5; display: grid; gap: 7px; min-width: 220px; padding: 12px 14px; color: #f8fffb; background: #14372d; border-radius: 10px; box-shadow: 0 12px 30px rgba(12,42,34,.24); transform: translateX(-8%); text-align: left; white-space: nowrap; pointer-events: none; }
 .chart-period-tooltip.align-right { left: auto; right: 50%; transform: translateX(8%); }

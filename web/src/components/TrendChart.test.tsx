@@ -14,6 +14,21 @@ const row = (overrides: Partial<PriceRow>): PriceRow => ({
 })
 
 describe('TrendChart', () => {
+  it('keeps the active guide on the same x coordinate as the hovered data points', () => {
+    const { container } = render(<TrendChart rows={[
+      row({ id: 'fpt-w10', periodKey: 'W10Q4FY26', weekId: 'W10Q4FY26', priceVnd: 18_000_000 }),
+      row({ id: 'fpt-w11', priceVnd: 19_000_000 }),
+    ]} model="iPhone 17 Pro Max 256GB" granularity="weekly" dailyWeeks={new Set()} onDrillDown={() => undefined} />)
+
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'Xem giá W11Q4FY26' }))
+
+    const guide = screen.getByTestId('chart-active-guide')
+    const point = [...container.querySelectorAll('circle')].find((circle) => circle.getAttribute('cx') === '940')
+    expect(point).toBeDefined()
+    expect(guide).toHaveAttribute('x1', point?.getAttribute('cx'))
+    expect(guide).toHaveAttribute('x2', point?.getAttribute('cx'))
+  })
+
   it('shows every Partner value together when hovering a weekly point', () => {
     render(<TrendChart rows={[
       row({ id: 'fpt-w10', partner: 'FPT', partnerName: 'FPT', periodKey: 'W10Q4FY26', weekId: 'W10Q4FY26', priceVnd: 18_000_000 }),

@@ -28,6 +28,7 @@ export function TrendChart({ rows, model, granularity, dailyWeeks, onDrillDown }
       <div className="chart-wrap">
         {values.length ? <div className="chart-stage"><svg viewBox="0 0 1000 310" role="img" aria-label={`Biểu đồ ${model}`}>
           {[0, 1, 2, 3, 4].map((index) => <line key={index} x1="60" x2="940" y1={30 + index * 58} y2={30 + index * 58} stroke="#e3ebe4" />)}
+          {activePeriod && <line data-testid="chart-active-guide" className="chart-active-guide" x1={x(activePeriod)} x2={x(activePeriod)} y1="18" y2="282" />}
           {partners.map((partner) => {
             const points = periods.flatMap((period) => {
               const row = rows.find((candidate) => candidate.partner === partner && (granularity === 'weekly' ? candidate.weekId : candidate.date) === period && candidate.priceVnd != null)
