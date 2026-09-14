@@ -81,7 +81,7 @@ describe('price data domain', () => {
     )
   })
 
-  it('selects only the Sunday-to-Saturday dates for a Daily drill-down', () => {
+  it('selects the seven calendar days ending on the chosen Daily date', () => {
     const rows = Array.from({ length: 9 }, (_, index) => mapEffectiveRow(effectiveRow({
       id: `daily-${index}`,
       period_type: 'daily',
@@ -90,9 +90,9 @@ describe('price data domain', () => {
       observed_at: `2026-09-${String(5 + index).padStart(2, '0')}T11:00:00+07:00`,
     })))
 
-    expect(selectDailyWeek(rows, '2026-09-09').map((row) => row.date)).toEqual([
-      '2026-09-06', '2026-09-07', '2026-09-08', '2026-09-09',
-      '2026-09-10', '2026-09-11', '2026-09-12',
+    expect(selectDailyWeek(rows, '2026-09-13').map((row) => row.date)).toEqual([
+      '2026-09-07', '2026-09-08', '2026-09-09', '2026-09-10',
+      '2026-09-11', '2026-09-12', '2026-09-13',
     ])
   })
 

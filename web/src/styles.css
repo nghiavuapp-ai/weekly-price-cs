@@ -151,6 +151,13 @@ footer { display: flex; justify-content: space-between; padding: 16px clamp(18px
   .kpi-value { font-size: 22px; }
   .section-head { padding: 17px; }
   .section-head { flex-direction: column; gap: 5px; }
+  .chart-wrap { min-height: 0; padding: 0 10px 8px; }
+  .chart-wrap svg { display: block; }
+  .drill-actions { padding: 2px 17px 17px; }
+  .matrix-table th:first-child, .matrix-table td:first-child { width: 168px; min-width: 168px; max-width: 168px; }
+  .matrix-table td:first-child { padding-inline: 13px; white-space: normal; line-height: 1.28; }
+  .matrix-table th:not(:first-child), .matrix-table td:not(:first-child) { min-width: 108px; padding-inline: 11px; }
+  .scroll { scrollbar-width: thin; scrollbar-color: #a8b8af transparent; }
   .form-grid { grid-template-columns: 1fr; }
   .admin-panel { padding: 22px 17px; }
 }

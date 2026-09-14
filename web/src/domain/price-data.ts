@@ -139,10 +139,9 @@ function isoDate(date: Date): string {
 }
 
 export function selectDailyWeek(rows: PriceRow[], selectedDate: string): PriceRow[] {
-  const start = parseLocalDate(selectedDate)
-  start.setDate(start.getDate() - start.getDay())
-  const end = new Date(start)
-  end.setDate(start.getDate() + 6)
+  const end = parseLocalDate(selectedDate)
+  const start = new Date(end)
+  start.setDate(end.getDate() - 6)
   return rows
     .filter((row) => row.granularity === 'daily' && parseLocalDate(row.date) >= start && parseLocalDate(row.date) <= end)
     .sort((left, right) => left.date.localeCompare(right.date) || left.partner.localeCompare(right.partner))
