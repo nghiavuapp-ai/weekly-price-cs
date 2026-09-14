@@ -379,10 +379,9 @@ def request_html(url: str, timeout: int = 30) -> str:
     }
     if "cellphones.com.vn" in url:
         headers["Cookie"] = "cps_province_id=24; cps_region=1"
-    request = Request(
-        url,
-        headers=headers,
-    )
+    if relay_supported(url):
+        return request_through_relay(url, timeout=timeout)
+    request = Request(url, headers=headers)
     context = ssl_context()
     if "cellphones.com.vn" not in url:
         fpt_proxy_url = os.environ.get("FPT_PROXY_URL", "").strip()
@@ -415,6 +414,11 @@ def request_html(url: str, timeout: int = 30) -> str:
 
 
 def request_json(url: str, timeout: int = 30) -> dict:
+    if relay_supported(url):
+        payload = json.loads(request_through_relay(url, timeout=timeout))
+        if not isinstance(payload, dict):
+            raise ValueError("Retailer relay returned a non-object JSON payload")
+        return payload
     request = Request(
         url,
         headers={
@@ -436,6 +440,47 @@ def request_json(url: str, timeout: int = 30) -> dict:
     if not isinstance(payload, dict):
         raise ValueError("FPT public API returned a non-object payload")
     return payload
+
+
+def relay_supported(url: str) -> bool:
+    relay_url = os.environ.get("PRICE_FETCH_RELAY_URL", "").strip()
+    relay_token = os.environ.get("PRICE_FETCH_RELAY_TOKEN", "").strip()
+    if not relay_url or not relay_token:
+        return False
+    hostname = (urllib.parse.urlsplit(url).hostname or "").lower()
+    return hostname in {
+        "fptshop.com.vn",
+        "www.fptshop.com.vn",
+        "papi.fptshop.com.vn",
+        "thegioididong.com",
+        "www.thegioididong.com",
+    }
+
+
+def request_through_relay(url: str, timeout: int = 30) -> str:
+    relay_url = os.environ.get("PRICE_FETCH_RELAY_URL", "").strip()
+    relay_token = os.environ.get("PRICE_FETCH_RELAY_TOKEN", "").strip()
+    if not relay_url or not relay_token:
+        raise ValueError("Retailer relay is not configured")
+    request = Request(
+        relay_url,
+        data=json.dumps({"url": url}).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {relay_token}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+        method="POST",
+    )
+    with urlopen(request, timeout=timeout, context=ssl_context()) as response:
+        charset = response.headers.get_content_charset() or "utf-8"
+        envelope = json.loads(response.read().decode(charset, errors="replace"))
+    if not isinstance(envelope, dict) or not isinstance(envelope.get("body"), str):
+        raise ValueError("Retailer relay returned an invalid envelope")
+    status = envelope.get("status")
+    if not isinstance(status, int) or not 200 <= status < 300:
+        raise HTTPError(url, status or 502, "Retailer relay upstream failed", {}, None)
+    return envelope["body"]
 
 
 def fetch_fpt_api_result(target: Target, timeout: int = 30) -> Result:

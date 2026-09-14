@@ -26,7 +26,8 @@ class AutomationConfigTests(unittest.TestCase):
         self.assertIn("steps.gate.outputs.allowed == 'true' && steps.plan.outputs.run_type == 'shadow'", workflow)
         self.assertIn("python tools/compare_shadow_to_daily.py --shadow-dir outputs/cloud", workflow)
         self.assertIn("python tools/shadow_gate.py record", workflow)
-        self.assertIn("FPT_PROXY_URL: ${{ secrets.FPT_PROXY_URL }}", workflow)
+        self.assertIn("PRICE_FETCH_RELAY_URL: ${{ secrets.PRICE_FETCH_RELAY_URL }}", workflow)
+        self.assertIn("PRICE_FETCH_RELAY_TOKEN: ${{ secrets.PRICE_FETCH_RELAY_TOKEN }}", workflow)
 
     def test_workflow_is_manual_idempotent_and_least_privilege(self):
         workflow = (ROOT / ".github/workflows/price-check.yml").read_text(encoding="utf-8")
@@ -63,6 +64,7 @@ class AutomationConfigTests(unittest.TestCase):
         config = (ROOT / "vercel.json").read_text(encoding="utf-8")
         self.assertIn('"outputDirectory": "web/dist"', config)
         self.assertIn('"buildCommand": "npm --prefix web ci && npm --prefix web run build"', config)
+        self.assertIn('"api/retailer-fetch.js"', config)
 
 
 if __name__ == "__main__":

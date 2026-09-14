@@ -33,7 +33,8 @@ jobs:
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      FPT_PROXY_URL: ${{ secrets.FPT_PROXY_URL }}
+      PRICE_FETCH_RELAY_URL: ${{ secrets.PRICE_FETCH_RELAY_URL }}
+      PRICE_FETCH_RELAY_TOKEN: ${{ secrets.PRICE_FETCH_RELAY_TOKEN }}
       PYTHONUNBUFFERED: "1"
     steps:
       - name: Check out source

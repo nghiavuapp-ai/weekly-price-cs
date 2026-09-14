@@ -187,6 +187,74 @@ class AvailabilityTests(unittest.TestCase):
         self.assertTrue(any(isinstance(handler, price_check_tool.urllib.request.ProxyHandler)
                             for handler in build_opener.call_args.args))
 
+    def test_cloud_relay_is_preferred_for_blocked_retailer_html(self):
+        relay_payload = json.dumps({"body": "<html>MW</html>", "status": 200}).encode("utf-8")
+
+        class Headers:
+            @staticmethod
+            def get_content_charset():
+                return "utf-8"
+
+        class Response:
+            headers = Headers()
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            @staticmethod
+            def read():
+                return relay_payload
+
+        with mock.patch.dict(os.environ, {
+            "PRICE_FETCH_RELAY_URL": "https://relay.test/api/retailer-fetch",
+            "PRICE_FETCH_RELAY_TOKEN": "secret",
+        }), mock.patch.object(price_check_tool, "urlopen", return_value=Response()) as open_mock:
+            result = price_check_tool.request_html(
+                "https://www.thegioididong.com/dtdd/iphone-17-pro-max"
+            )
+
+        self.assertEqual(result, "<html>MW</html>")
+        request = open_mock.call_args.args[0]
+        self.assertEqual(request.full_url, "https://relay.test/api/retailer-fetch")
+        self.assertEqual(request.get_header("Authorization"), "Bearer secret")
+
+    def test_cloud_relay_returns_fpt_json_payload(self):
+        relay_payload = json.dumps({
+            "body": '{"data":{"skus":[]}}',
+            "status": 200,
+        }).encode("utf-8")
+
+        class Headers:
+            @staticmethod
+            def get_content_charset():
+                return "utf-8"
+
+        class Response:
+            headers = Headers()
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            @staticmethod
+            def read():
+                return relay_payload
+
+        with mock.patch.dict(os.environ, {
+            "PRICE_FETCH_RELAY_URL": "https://relay.test/api/retailer-fetch",
+            "PRICE_FETCH_RELAY_TOKEN": "secret",
+        }), mock.patch.object(price_check_tool, "urlopen", return_value=Response()):
+            result = price_check_tool.request_json(
+                "https://papi.fptshop.com.vn/gw/v1/public/bff-before-order/product/variant?slug=iphone"
+            )
+
+        self.assertEqual(result, {"data": {"skus": []}})
+
     def test_price_parser_handles_display_and_decimal_integer(self):
         self.assertEqual(price_check_tool.parse_price_number("16.990.000₫"), 16_990_000)
         self.assertEqual(price_check_tool.parse_price_number("16990000.0"), 16_990_000)

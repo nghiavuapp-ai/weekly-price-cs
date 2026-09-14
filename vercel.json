@@ -4,8 +4,12 @@
   "installCommand": "echo Dependencies are installed by buildCommand",
   "buildCommand": "npm --prefix web ci && npm --prefix web run build",
   "outputDirectory": "web/dist",
+  "functions": {
+    "api/retailer-fetch.js": {
+      "maxDuration": 30
+    }
+  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
-

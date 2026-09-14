@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "check": "node --check tools/render_price_check.cjs",
-    "test": "npm run check"
+    "test": "npm run check && node --test tests/test_retailer_fetch.cjs"
   },
   "dependencies": {
     "playwright": "1.62.1"
