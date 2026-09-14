@@ -201,6 +201,18 @@ class SupabaseRestClient:
             prefer="resolution=ignore-duplicates,return=minimal",
         )
 
+    def upsert(self, table: str, rows: Iterable[Mapping], *, on_conflict: str) -> None:
+        batch = [dict(row) for row in rows]
+        if not batch:
+            return
+        self._request(
+            "POST",
+            table,
+            query={"on_conflict": on_conflict},
+            body=batch,
+            prefer="resolution=merge-duplicates,return=minimal",
+        )
+
     def update(self, table: str, values: Mapping, *, filters: Mapping[str, str]) -> None:
         self._request(
             "PATCH",

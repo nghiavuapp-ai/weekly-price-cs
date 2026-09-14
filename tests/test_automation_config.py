@@ -12,14 +12,20 @@ class AutomationConfigTests(unittest.TestCase):
         self.assertIn("schedule:", workflow)
         self.assertIn("cron: '17 13 * * *'", workflow)
         self.assertIn('timezone: "Asia/Ho_Chi_Minh"', workflow)
-        self.assertIn("github.event_name == 'schedule' && 'shadow' || inputs.run_type", workflow)
+        self.assertIn("cron: '0 11 * * *'", workflow)
+        self.assertIn("cron: '30 11 * * *'", workflow)
+        self.assertIn("cron: '0 12 * * 5'", workflow)
+        self.assertIn("Resolve scheduled run type", workflow)
+        self.assertIn("Check cloud production gate", workflow)
+        self.assertIn("python tools/shadow_gate.py status", workflow)
 
     def test_shadow_workflow_compares_cloud_output_with_same_day_daily_reference(self):
         workflow = (ROOT / ".github" / "workflows" / "price-check.yml").read_text(encoding="utf-8")
 
         self.assertIn("Compare shadow with local Daily reference", workflow)
-        self.assertIn('if: ${{ env.RUN_TYPE == \'shadow\' }}', workflow)
+        self.assertIn("if: ${{ steps.plan.outputs.run_type == 'shadow' }}", workflow)
         self.assertIn("python tools/compare_shadow_to_daily.py --shadow-dir outputs/cloud", workflow)
+        self.assertIn("python tools/shadow_gate.py record", workflow)
         self.assertIn("FPT_PROXY_URL: ${{ secrets.FPT_PROXY_URL }}", workflow)
 
     def test_workflow_is_manual_idempotent_and_least_privilege(self):
