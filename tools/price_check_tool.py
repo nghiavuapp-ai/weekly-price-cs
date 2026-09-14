@@ -490,7 +490,7 @@ def fetch_fpt_api_result(target: Target, timeout: int = 30) -> Result:
             availability="In stock",
             availability_method="fpt_public_api_status",
             availability_text=status_on_web or button_code,
-            purchase_action="YES",
+            purchase_action="IN_STOCK",
             purchase_action_method="fpt_public_api_status",
             purchase_action_text=button_code,
         )
@@ -1296,6 +1296,8 @@ def is_render_candidate(result: Result) -> bool:
     if result.source_method == "override":
         return False
     retailer = normalize_name(result.retailer)
+    if retailer == "FPT" and result.source_method.startswith("fpt_public_api"):
+        return False
     render_recovery_retailer = retailer in {"CPS", "MW", "Shopdunk", "FPT", "Viettel"}
     if result.source_method == "missing_direct_link":
         return False

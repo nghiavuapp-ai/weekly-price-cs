@@ -86,8 +86,13 @@ class AvailabilityTests(unittest.TestCase):
         self.assertEqual(result.status, "OK")
         self.assertEqual(result.value, 21_490_000)
         self.assertEqual(result.source_method, "fpt_public_api")
-        self.assertEqual(result.purchase_action, "YES")
+        self.assertEqual(result.purchase_action, "IN_STOCK")
         self.assertEqual(result.purchase_action_text, "ORDER")
+        price_check_tool.add_initial_risk_flags_from_previous(
+            [result], {(result.model, "FPT"): 21_490_000}
+        )
+        self.assertNotIn("WARN_STOCK_ACTION_UNVERIFIED", result.risk_flags)
+        self.assertFalse(price_check_tool.is_render_candidate(result))
 
     def test_fpt_public_api_does_not_keep_price_when_status_is_oos(self):
         target = price_check_tool.Target(
@@ -126,6 +131,7 @@ class AvailabilityTests(unittest.TestCase):
         self.assertEqual(result.value, "OOS")
         self.assertEqual(result.confidence, "VERIFIED_OOS")
         self.assertEqual(result.source_method, "fpt_public_api_status")
+        self.assertFalse(price_check_tool.is_render_candidate(result))
 
     def test_fpt_403_falls_back_to_public_api(self):
         target = price_check_tool.Target(
