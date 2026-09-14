@@ -396,9 +396,14 @@ def _run_row(identity: RunIdentity, when: dt.datetime, status: str, observations
     }
 
 
-def _previous_week_prices(client: SupabaseRestClient, catalog: Catalog) -> dict[tuple[str, str], int | str | None]:
+def _previous_prices(
+    client: SupabaseRestClient,
+    catalog: Catalog,
+    run_type: str,
+) -> dict[tuple[str, str], int | str | None]:
+    table = "weekly_price_history" if run_type == "weekly" else "current_daily_prices"
     rows = client.select(
-        "weekly_price_history",
+        table,
         columns="product_id,retailer_id,effective_price_vnd,effective_in_stock,period_start",
         order="period_start.desc",
     )
@@ -485,7 +490,7 @@ def execute_run(
         client.insert_ignore("crawl_runs", [_run_row(identity, now, "running", [])])
 
     results = [crawl(item.target, catalog.overrides) for item in items]
-    previous = _previous_week_prices(client, catalog)
+    previous = _previous_prices(client, catalog, run_type)
     price_check.add_initial_risk_flags_from_previous(results, previous)
     backcheck(results, Path(output_dir))
     observations = [

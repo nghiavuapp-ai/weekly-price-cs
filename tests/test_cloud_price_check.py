@@ -150,6 +150,58 @@ class CatalogAndRetryTests(unittest.TestCase):
         self.assertEqual(shopdunk.target.retailer, "Shopdunk")
 
 
+class BaselineSelectionTests(unittest.TestCase):
+    def setUp(self):
+        import cloud_price_check  # noqa: PLC0415
+
+        self.cloud = cloud_price_check
+        self.catalog = self.cloud.Catalog((
+            self.cloud.CatalogItem(
+                target=price_check.Target("iPhone 17e 256GB", "FPT", "https://fpt.test/17e"),
+                product_id="p-active",
+                retailer_id="r-fpt",
+                link_id="l-fpt",
+                retailer_name="FPT",
+            ),
+        ), {})
+
+    def test_daily_and_shadow_use_latest_daily_baseline(self):
+        class Client:
+            def __init__(self):
+                self.tables = []
+
+            def select(self, table, **kwargs):
+                self.tables.append(table)
+                return [{
+                    "product_id": "p-active", "retailer_id": "r-fpt",
+                    "effective_price_vnd": 21_490_000, "effective_in_stock": True,
+                }]
+
+        for run_type in ("primary", "retry", "shadow"):
+            with self.subTest(run_type=run_type):
+                client = Client()
+                baseline = self.cloud._previous_prices(client, self.catalog, run_type)
+                self.assertEqual(client.tables, ["current_daily_prices"])
+                self.assertEqual(baseline[("iPhone 17e 256GB", "FPT")], 21_490_000)
+
+    def test_weekly_uses_weekly_history_baseline(self):
+        class Client:
+            def __init__(self):
+                self.tables = []
+
+            def select(self, table, **kwargs):
+                self.tables.append(table)
+                return [{
+                    "product_id": "p-active", "retailer_id": "r-fpt",
+                    "effective_price_vnd": None, "effective_in_stock": False,
+                }]
+
+        client = Client()
+        baseline = self.cloud._previous_prices(client, self.catalog, "weekly")
+        self.assertEqual(client.tables, ["weekly_price_history"])
+        self.assertEqual(baseline[("iPhone 17e 256GB", "FPT")], "OOS")
+
+
 class ObservationTests(unittest.TestCase):
     def setUp(self):
         import cloud_price_check  # noqa: PLC0415
@@ -278,7 +330,7 @@ class RestAndDuplicateTests(unittest.TestCase):
                 return [self.primary_run] if self.primary_run else []
             if table == "price_observations":
                 return list(self.existing_observations)
-            if table == "weekly_price_history":
+            if table in {"weekly_price_history", "current_daily_prices"}:
                 return []
             return super().select(table, columns=columns, filters=filters, order=order, limit=limit)
 
