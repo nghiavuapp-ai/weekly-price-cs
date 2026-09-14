@@ -35,8 +35,9 @@ khong ghi vao file `.env`, Git hay Vercel build log.
 4. Tao GitHub App co quyen Actions `write`, Metadata `read`, cai App chi vao repo nay.
 5. Deploy Edge Function `dispatch-price-check`, dat cac secret duoc liet ke trong
    `.env.example`, va luu `dispatcher_url`, `dispatcher_secret` trong Supabase Vault.
-6. Ap dung `supabase/seed.sql` de cai ba lich UTC tuong ung Asia/Ho_Chi_Minh:
-   primary 11:00 hang ngay, retry 11:30 hang ngay, Weekly 12:00 thu Sau.
+6. Ap dung `supabase/seed.sql` neu dung dispatcher Supabase. Workflow GitHub hien
+   dung cron UTC co dinh tuong ung Asia/Ho_Chi_Minh: primary 11:00 hang ngay,
+   retry 11:30 hang ngay, Weekly 12:00 thu Sau va shadow 13:17 hang ngay.
 7. Dat `SUPABASE_URL` va `SUPABASE_SERVICE_ROLE_KEY` trong GitHub Actions secrets;
    dat ba bien `VITE_*` trong Vercel va deploy repo.
 
@@ -46,9 +47,14 @@ Chay shadow thu cong truoc khi mo lich authoritative:
 gh workflow run price-check.yml -f run_type=shadow
 ```
 
-Shadow crawl that nhung khong ghi observation. Sau khi doi chieu du 7 ngay, moi coi
-lich cloud la nguon authoritative. Nen tang free tier khong co SLA 100%; dashboard
-se hien canh bao khi Daily/Weekly tre, retry con loi hoac run bi treo.
+Shadow crawl that nhung khong ghi observation. Moi ngay chi dat khi artifact
+`shadow-comparison` co `quality_gate.passed=true`: du danh muc, khong fetch error,
+khong review pending va gia/trang thai khop 100% voi snapshot Daily local cung ngay.
+`price_automation_state.production_enabled` chi duoc bat sau 7 ngay lien tiep dat;
+truoc moc do cac lich production tu dong thoat ma khong crawl. FPT tu dong fallback
+sang public BFF API khi trang HTML tra HTTP 403; gia chi duoc chap nhan neu trang
+thai SKU cho phep mua. Nen tang free tier khong co SLA 100%; dashboard se hien canh
+bao khi Daily/Weekly tre, retry con loi hoac run bi treo.
 
 Cong cu nay cap nhat file `Price Check.xlsx` tu cac link san pham truc tiep trong `Link Product.xlsx`.
 

@@ -63,10 +63,10 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           RUN_TYPE: ${{ steps.plan.outputs.run_type }}
         run: |
-          if [ "$EVENT_NAME" != "schedule" ] || [ "$RUN_TYPE" = "shadow" ]; then
+          if [ "$EVENT_NAME" != "schedule" ]; then
             echo "allowed=true" >> "$GITHUB_OUTPUT"
           else
-            python tools/shadow_gate.py status
+            python tools/shadow_gate.py status --run-type "$RUN_TYPE"
           fi
       - name: Set up Node.js
         if: ${{ steps.gate.outputs.allowed == 'true' }}
@@ -86,10 +86,10 @@ jobs:
           RUN_TYPE: ${{ steps.plan.outputs.run_type }}
         run: python tools/cloud_price_check.py --run-type "$RUN_TYPE"
       - name: Compare shadow with local Daily reference
-        if: ${{ steps.plan.outputs.run_type == 'shadow' }}
+        if: ${{ steps.gate.outputs.allowed == 'true' && steps.plan.outputs.run_type == 'shadow' }}
         run: python tools/compare_shadow_to_daily.py --shadow-dir outputs/cloud
       - name: Record shadow quality gate
-        if: ${{ steps.plan.outputs.run_type == 'shadow' }}
+        if: ${{ steps.gate.outputs.allowed == 'true' && steps.plan.outputs.run_type == 'shadow' }}
         run: python tools/shadow_gate.py record --report "$(find outputs/cloud -name 'shadow-comparison-*.json' -print -quit)"
       - name: Upload crawl evidence
         if: always()

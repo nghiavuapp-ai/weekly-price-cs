@@ -11,6 +11,14 @@ import shadow_gate  # noqa: E402
 
 
 class ShadowGateTests(unittest.TestCase):
+    def test_scheduled_shadow_and_production_runs_are_mutually_exclusive(self):
+        self.assertTrue(shadow_gate.scheduled_run_allowed("shadow", production_enabled=False))
+        self.assertFalse(shadow_gate.scheduled_run_allowed("primary", production_enabled=False))
+        self.assertFalse(shadow_gate.scheduled_run_allowed("shadow", production_enabled=True))
+        self.assertTrue(shadow_gate.scheduled_run_allowed("primary", production_enabled=True))
+        self.assertTrue(shadow_gate.scheduled_run_allowed("retry", production_enabled=True))
+        self.assertTrue(shadow_gate.scheduled_run_allowed("weekly", production_enabled=True))
+
     def test_seven_contiguous_passes_promote(self):
         rows = [
             {"period_key": (dt.date(2026, 9, 7) + dt.timedelta(days=index)).isoformat(), "passed": True}

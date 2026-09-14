@@ -17,13 +17,13 @@ class AutomationConfigTests(unittest.TestCase):
         self.assertNotIn("timezone:", workflow)
         self.assertIn("Resolve scheduled run type", workflow)
         self.assertIn("Check cloud production gate", workflow)
-        self.assertIn("python tools/shadow_gate.py status", workflow)
+        self.assertIn('python tools/shadow_gate.py status --run-type "$RUN_TYPE"', workflow)
 
     def test_shadow_workflow_compares_cloud_output_with_same_day_daily_reference(self):
         workflow = (ROOT / ".github" / "workflows" / "price-check.yml").read_text(encoding="utf-8")
 
         self.assertIn("Compare shadow with local Daily reference", workflow)
-        self.assertIn("if: ${{ steps.plan.outputs.run_type == 'shadow' }}", workflow)
+        self.assertIn("steps.gate.outputs.allowed == 'true' && steps.plan.outputs.run_type == 'shadow'", workflow)
         self.assertIn("python tools/compare_shadow_to_daily.py --shadow-dir outputs/cloud", workflow)
         self.assertIn("python tools/shadow_gate.py record", workflow)
         self.assertIn("FPT_PROXY_URL: ${{ secrets.FPT_PROXY_URL }}", workflow)

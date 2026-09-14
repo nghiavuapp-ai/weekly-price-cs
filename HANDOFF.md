@@ -14,11 +14,11 @@ thành `dashboard-gia-ban-le-clean.html`. Các file giao diện nguồn là
 `tools/dashboard_template.html`, `tools/dashboard_style.css` và
 `tools/dashboard_ui.js`.
 
-Nền tảng cloud mới nằm trong `supabase/`, `tools/cloud_price_check.py`,
-`.github/workflows/price-check.yml` và `web/`. Frontend đã qua 20/20 test, production
-build và kiểm tra trình duyệt thật cho bảng Weekly, chọn model, drill-down Daily và
-màn mở khóa admin. Vercel production và public GitHub repo đã hoạt động; Supabase,
-Auth admin, GitHub App và lịch authoritative chưa được provision ở thời điểm handoff này.
+Nền tảng cloud nằm trong `supabase/`, `tools/cloud_price_check.py`,
+`.github/workflows/price-check.yml` và `web/`. Vercel production, Supabase và public
+GitHub repo đã hoạt động. Cloud đang ở chế độ shadow: production được khóa bằng
+`price_automation_state` và chỉ tự mở sau 7 ngày liên tiếp có
+`quality_gate.passed=true`. FPT có fallback public BFF API khi HTML bị chặn 403.
 
 ## Việc cần làm tiếp theo
 
@@ -26,10 +26,19 @@ Auth admin, GitHub App và lịch authoritative chưa được provision ở th�
 2. Kiểm tra các dòng màu vàng có `Review Status = Pending`.
 3. Chỉ sửa giá đã xác nhận qua `Price Overrides.csv`.
 4. Không dùng Daily để thay thế Weekly khi chưa có quyết định mới.
-5. Provision cloud theo runbook trong README, import lịch sử và chạy shadow 7 ngày trước khi bật lịch authoritative.
+5. Theo dõi artifact `shadow-comparison` lúc 13:17 hằng ngày; không bật production
+   thủ công. Gate tự bật sau đúng 7 ngày liên tiếp đạt và tự reset chuỗi khi có ngày
+   lỗi hoặc thiếu baseline local.
 6. Weekly Price Check kiểm tra CTA mua hàng cùng với giá: CTA âm tính là OOS; CTA xung đột hoặc không xác minh được phải review.
 
 ## Kiểm định gần nhất
+
+- **2026-09-14:** snapshot local chính xác `daily-20260914-primary` đã được import
+  lên Supabase để làm baseline shadow: 195 dòng, 132 có giá, 63 OOS, 0 lỗi,
+  0 review, SHA256 `6c00a10f59f461f66e393f629ae4f7caf4a4731e502783ce29da28b16af6a3cc`.
+- **Cloud code:** 81/81 unit test đạt; lịch GitHub dùng UTC cố định tương ứng
+  11:00, 11:30, 12:00 thứ Sáu và shadow 13:17 giờ Việt Nam. Production vẫn khóa
+  cho đến khi hoàn tất gate 7 ngày.
 
 - **2026-09-11:** W11Q4FY26 đã được cập nhật từ report `price_results_W11Q4FY26_20260911-013037.csv` và có backup tương ứng.
 - **Kết quả:** 195 dòng, 135 OK, 60 OOS; không còn dòng cần review sau khi xác minh lại CTA và cổng tồn kho Shopdunk.

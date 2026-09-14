@@ -17,6 +17,13 @@ STATE_ID = "apple_price_check"
 REQUIRED_STREAK = 7
 
 
+def scheduled_run_allowed(run_type: str, *, production_enabled: bool) -> bool:
+    """Run shadow before promotion and authoritative jobs only after promotion."""
+    if run_type == "shadow":
+        return not production_enabled
+    return production_enabled
+
+
 def evaluate_streak(rows: Sequence[Mapping]) -> dict:
     normalized = sorted(
         ({"period_key": str(row.get("period_key", "")), "passed": row.get("passed") is True} for row in rows),
@@ -112,17 +119,23 @@ def main(argv: Sequence[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     record = subparsers.add_parser("record")
     record.add_argument("--report", type=Path, required=True)
-    subparsers.add_parser("status")
+    status = subparsers.add_parser("status")
+    status.add_argument("--run-type", choices=("primary", "retry", "weekly", "shadow"), default="primary")
     args = parser.parse_args(argv)
     client = _client()
     if args.command == "record":
         result = record_report(client, json.loads(args.report.read_text(encoding="utf-8")))
     else:
         result = production_status(client)
+        allowed = scheduled_run_allowed(
+            args.run_type,
+            production_enabled=result.get("production_enabled") is True,
+        )
+        result["allowed"] = allowed
         output_path = os.environ.get("GITHUB_OUTPUT")
         if output_path:
             with Path(output_path).open("a", encoding="utf-8") as output:
-                output.write(f"allowed={'true' if result.get('production_enabled') else 'false'}\n")
+                output.write(f"allowed={'true' if allowed else 'false'}\n")
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
 
