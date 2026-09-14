@@ -414,6 +414,103 @@ def request_html(url: str, timeout: int = 30) -> str:
     return best_html or last_html
 
 
+def request_json(url: str, timeout: int = 30) -> dict:
+    request = Request(
+        url,
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
+            ),
+            "Accept": "application/json",
+            "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
+            # FPT's public BFF rejects requests without its documented web
+            # sales-channel identifier. The storefront itself sends value 1.
+            "order-channel": "1",
+            "Referer": "https://fptshop.com.vn/",
+        },
+    )
+    with urlopen(request, timeout=timeout, context=ssl_context()) as response:
+        charset = response.headers.get_content_charset() or "utf-8"
+        payload = json.loads(response.read().decode(charset, errors="replace"))
+    if not isinstance(payload, dict):
+        raise ValueError("FPT public API returned a non-object payload")
+    return payload
+
+
+def fetch_fpt_api_result(target: Target, timeout: int = 30) -> Result:
+    """Recover FPT price/availability from its public BFF after storefront 403."""
+    fetched_at = dt.datetime.now().isoformat(timespec="seconds")
+    parsed_url = urllib.parse.urlsplit(target.url)
+    slug = parsed_url.path.strip("/")
+    if not slug:
+        raise ValueError("FPT product URL has no product slug")
+    encoded_slug = urllib.parse.quote(slug, safe="")
+    variant_url = (
+        "https://papi.fptshop.com.vn/gw/v1/public/bff-before-order/"
+        f"product/variant?slug={encoded_slug}"
+    )
+    variant_payload = request_json(variant_url, timeout=timeout)
+    skus = (variant_payload.get("data") or {}).get("skus") or []
+    requested_sku = urllib.parse.parse_qs(parsed_url.query).get("sku", [""])[0]
+    selected = next(
+        (sku for sku in skus if requested_sku and str(sku.get("code", "")) == requested_sku),
+        None,
+    )
+    selected = selected or next((sku for sku in skus if sku.get("isDefaultSku") is True), None)
+    if not isinstance(selected, dict):
+        raise ValueError("FPT public API returned no selectable SKU")
+    sku_code = str(selected.get("code") or "").strip()
+    price = selected.get("price")
+    if not sku_code or not isinstance(price, int) or price <= 0:
+        raise ValueError("FPT public API returned an invalid SKU or price")
+
+    status_url = (
+        "https://papi.fptshop.com.vn/gw/v1/public/bff-before-order/"
+        f"product/status?sku={urllib.parse.quote(sku_code, safe='')}"
+    )
+    status_payload = request_json(status_url, timeout=timeout)
+    status_data = status_payload.get("data") or {}
+    button_code = str(status_data.get("buttonCode") or "").strip().upper()
+    status_on_web = str(status_data.get("statusOnWeb") or "").strip()
+
+    if button_code in {"ORDER", "PREORDER", "PRE_ORDER", "DEPOSIT"}:
+        return Result(
+            target.model,
+            target.retailer,
+            target.url,
+            price,
+            "OK",
+            fetched_at=fetched_at,
+            base_value=price,
+            source_method="fpt_public_api",
+            html_price=price,
+            confidence="API_OK",
+            decision_note=f"FPT public API SKU {sku_code}",
+            availability="In stock",
+            availability_method="fpt_public_api_status",
+            availability_text=status_on_web or button_code,
+            purchase_action="YES",
+            purchase_action_method="fpt_public_api_status",
+            purchase_action_text=button_code,
+        )
+
+    if button_code in {"REGISTER_IN_ADVANCE", "EXPLORE_OTHER_PRODUCT"}:
+        result = oos_result(
+            target,
+            fetched_at,
+            "fpt_public_api_status",
+            status_on_web or button_code,
+        )
+        result.confidence = "VERIFIED_OOS"
+        result.purchase_action = "NO"
+        result.purchase_action_method = "fpt_public_api_status"
+        result.purchase_action_text = button_code
+        return result
+
+    raise ValueError(f"FPT public API returned an unsupported button code: {button_code or 'blank'}")
+
+
 def shopdunk_stock_probe(url: str) -> tuple[str, str, str] | None:
     """Resolve Shopdunk's selected SKU and final stock gate used by its UI."""
     if "shopdunk.com" not in url.lower():
@@ -1112,7 +1209,21 @@ def fetch_target(target: Target, delay: float, overrides: dict[str, tuple[int, s
     try:
         result = extract_price(request_html(target.url), target)
     except HTTPError as exc:
-        result = Result(target.model, target.retailer, target.url, None, "HTTP_ERROR", f"{exc.code} {exc.reason}", fetched_at=fetched_at)
+        if exc.code == 403 and normalize_name(target.retailer) == "FPT":
+            try:
+                result = fetch_fpt_api_result(target)
+            except Exception as api_exc:  # noqa: BLE001 - preserve both failure paths in the report.
+                result = Result(
+                    target.model,
+                    target.retailer,
+                    target.url,
+                    None,
+                    "HTTP_ERROR",
+                    f"{exc.code} {exc.reason}; FPT API fallback: {api_exc}",
+                    fetched_at=fetched_at,
+                )
+        else:
+            result = Result(target.model, target.retailer, target.url, None, "HTTP_ERROR", f"{exc.code} {exc.reason}", fetched_at=fetched_at)
     except URLError as exc:
         result = Result(target.model, target.retailer, target.url, None, "URL_ERROR", str(exc.reason), fetched_at=fetched_at)
     except Exception as exc:  # noqa: BLE001 - keep batch running and report URL failures.

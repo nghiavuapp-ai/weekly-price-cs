@@ -56,6 +56,100 @@ class WeekRolloverTests(unittest.TestCase):
 
 
 class AvailabilityTests(unittest.TestCase):
+    def test_fpt_public_api_returns_buyable_default_sku(self):
+        target = price_check_tool.Target(
+            "iPhone 17e 256GB",
+            "FPT",
+            "https://fptshop.com.vn/dien-thoai/iphone-17e",
+        )
+        responses = [
+            {
+                "status": 200,
+                "data": {
+                    "skus": [
+                        {
+                            "code": "00926263",
+                            "displayName": "iPhone 17e 256GB",
+                            "price": 21_490_000,
+                            "inventory": 6,
+                            "isDefaultSku": True,
+                        }
+                    ]
+                },
+            },
+            {"status": 200, "data": {"buttonCode": "ORDER", "statusOnWeb": ""}},
+        ]
+
+        with mock.patch.object(price_check_tool, "request_json", side_effect=responses):
+            result = price_check_tool.fetch_fpt_api_result(target)
+
+        self.assertEqual(result.status, "OK")
+        self.assertEqual(result.value, 21_490_000)
+        self.assertEqual(result.source_method, "fpt_public_api")
+        self.assertEqual(result.purchase_action, "YES")
+        self.assertEqual(result.purchase_action_text, "ORDER")
+
+    def test_fpt_public_api_does_not_keep_price_when_status_is_oos(self):
+        target = price_check_tool.Target(
+            "iPhone 14 128GB",
+            "FPT",
+            "https://fptshop.com.vn/dien-thoai/iphone-14",
+        )
+        responses = [
+            {
+                "status": 200,
+                "data": {
+                    "skus": [
+                        {
+                            "code": "00832860",
+                            "displayName": "iPhone 14 128GB",
+                            "price": 13_990_000,
+                            "inventory": 1,
+                            "isDefaultSku": True,
+                        }
+                    ]
+                },
+            },
+            {
+                "status": 200,
+                "data": {
+                    "buttonCode": "REGISTER_IN_ADVANCE",
+                    "statusOnWeb": "tam_het_hang",
+                },
+            },
+        ]
+
+        with mock.patch.object(price_check_tool, "request_json", side_effect=responses):
+            result = price_check_tool.fetch_fpt_api_result(target)
+
+        self.assertEqual(result.status, "OOS")
+        self.assertEqual(result.value, "OOS")
+        self.assertEqual(result.confidence, "VERIFIED_OOS")
+        self.assertEqual(result.source_method, "fpt_public_api_status")
+
+    def test_fpt_403_falls_back_to_public_api(self):
+        target = price_check_tool.Target(
+            "iPhone 17e 256GB",
+            "FPT",
+            "https://fptshop.com.vn/dien-thoai/iphone-17e",
+        )
+        fallback = price_check_tool.Result(
+            target.model,
+            target.retailer,
+            target.url,
+            21_490_000,
+            "OK",
+            source_method="fpt_public_api",
+        )
+        error = price_check_tool.HTTPError(target.url, 403, "Forbidden", {}, None)
+
+        with mock.patch.object(price_check_tool, "request_html", side_effect=error), \
+             mock.patch.object(price_check_tool, "fetch_fpt_api_result", return_value=fallback) as api:
+            result = price_check_tool.fetch_target(target, 0)
+
+        self.assertIs(result, fallback)
+        api.assert_called_once_with(target)
+
     def test_fpt_request_uses_configured_cloud_proxy(self):
         class Headers:
             @staticmethod
