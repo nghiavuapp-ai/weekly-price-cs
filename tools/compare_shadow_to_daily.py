@@ -39,6 +39,36 @@ def _rate(numerator: int, denominator: int) -> float | None:
     return round(numerator * 100 / denominator, 2) if denominator else None
 
 
+def _quality_gate(status: str, counts: Mapping[str, int], rates: Mapping[str, float | None]) -> dict:
+    """Encode the promotion contract in the artifact itself."""
+    required = {
+        "status": "compared",
+        "cloud_only": 0,
+        "reference_only": 0,
+        "shadow_fetch_errors": 0,
+        "shadow_pending_reviews": 0,
+        "price_mismatches": 0,
+        "stock_mismatches": 0,
+        "price_match_pct": 100.0,
+        "stock_match_pct": 100.0,
+    }
+    if status != "compared":
+        return {
+            "status": "waiting_local",
+            "passed": False,
+            "failed_checks": ["status"],
+            "required": required,
+        }
+    actual = {**counts, **rates, "status": status}
+    failed_checks = [key for key, expected in required.items() if actual.get(key) != expected]
+    return {
+        "status": "passed" if not failed_checks else "failed",
+        "passed": not failed_checks,
+        "failed_checks": failed_checks,
+        "required": required,
+    }
+
+
 def compare_rows(
     shadow_observations: Sequence[Mapping],
     reference_rows: Sequence[Mapping],
@@ -121,15 +151,18 @@ def compare_rows(
         "stock_matches": stock_matches,
         "stock_mismatches": stock_mismatches,
     }
+    status = "compared" if reference else "waiting_local"
+    rates = {
+        "catalog_overlap_pct": _rate(len(common_keys), len(reference)),
+        "price_match_pct": _rate(price_matches, price_comparable),
+        "stock_match_pct": _rate(stock_matches, len(common_keys)),
+    }
     return {
-        "status": "compared" if reference else "waiting_local",
+        "status": status,
         "period_key": period_key,
         "counts": counts,
-        "rates": {
-            "catalog_overlap_pct": _rate(len(common_keys), len(reference)),
-            "price_match_pct": _rate(price_matches, price_comparable),
-            "stock_match_pct": _rate(stock_matches, len(common_keys)),
-        },
+        "rates": rates,
+        "quality_gate": _quality_gate(status, counts, rates),
         "by_partner": dict(sorted(partner_counts.items())),
         "mismatches": mismatches,
         "cloud_only": [dict(shadow[key]) for key in cloud_only_keys],

@@ -53,6 +53,10 @@ class ShadowComparisonTests(unittest.TestCase):
         self.assertEqual(report["by_partner"]["FPT"]["price_mismatches"], 1)
         self.assertEqual(report["by_partner"]["MW"]["stock_mismatches"], 1)
         self.assertEqual(report["mismatches"][0]["product_name"], "Model 2")
+        self.assertEqual(report["quality_gate"]["status"], "failed")
+        self.assertFalse(report["quality_gate"]["passed"])
+        self.assertIn("cloud_only", report["quality_gate"]["failed_checks"])
+        self.assertIn("price_match_pct", report["quality_gate"]["failed_checks"])
 
     def test_latest_reference_observation_wins_for_duplicate_pair(self):
         shadow = [{"product_id": "p1", "retailer_id": "r1", "price_vnd": 12_000,
@@ -71,6 +75,34 @@ class ShadowComparisonTests(unittest.TestCase):
         self.assertEqual(report["counts"]["reference_total"], 1)
         self.assertEqual(report["counts"]["price_matches"], 1)
 
+    def test_quality_gate_passes_only_for_an_exact_clean_match(self):
+        shadow = [{"product_id": "p1", "retailer_id": "r1", "price_vnd": 12_000,
+                   "in_stock": True, "fetch_ok": True, "review_status": "confirmed",
+                   "risk_flags": []}]
+        reference = [{"product_id": "p1", "retailer_id": "r1",
+                      "effective_price_vnd": 12_000, "effective_in_stock": True,
+                      "retailer_code": "FPT", "product_name": "Model",
+                      "observed_at": "2026-09-13T11:00:00+07:00"}]
+
+        report = comparison.compare_rows(shadow, reference, period_key="2026-09-13")
+
+        self.assertEqual(report["quality_gate"], {
+            "status": "passed",
+            "passed": True,
+            "failed_checks": [],
+            "required": {
+                "status": "compared",
+                "cloud_only": 0,
+                "reference_only": 0,
+                "shadow_fetch_errors": 0,
+                "shadow_pending_reviews": 0,
+                "price_mismatches": 0,
+                "stock_mismatches": 0,
+                "price_match_pct": 100.0,
+                "stock_match_pct": 100.0,
+            },
+        })
+
     def test_missing_same_day_local_reference_waits_instead_of_failing(self):
         report = comparison.compare_rows(
             [{"product_id": "p1", "retailer_id": "r1", "fetch_ok": False,
@@ -83,6 +115,8 @@ class ShadowComparisonTests(unittest.TestCase):
         self.assertEqual(report["counts"]["shadow_total"], 1)
         self.assertEqual(report["counts"]["reference_total"], 0)
         self.assertIsNone(report["rates"]["price_match_pct"])
+        self.assertEqual(report["quality_gate"]["status"], "waiting_local")
+        self.assertFalse(report["quality_gate"]["passed"])
 
 
 class ShadowComparisonCliTests(unittest.TestCase):
