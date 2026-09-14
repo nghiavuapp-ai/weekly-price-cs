@@ -10,11 +10,11 @@ class AutomationConfigTests(unittest.TestCase):
     def test_workflow_schedules_daily_shadow_after_the_local_validation_window(self):
         workflow = (ROOT / ".github/workflows/price-check.yml").read_text(encoding="utf-8")
         self.assertIn("schedule:", workflow)
-        self.assertIn("cron: '17 13 * * *'", workflow)
-        self.assertIn('timezone: "Asia/Ho_Chi_Minh"', workflow)
-        self.assertIn("cron: '0 11 * * *'", workflow)
-        self.assertIn("cron: '30 11 * * *'", workflow)
-        self.assertIn("cron: '0 12 * * 5'", workflow)
+        self.assertIn("cron: '17 6 * * *'", workflow)  # 13:17 Asia/Ho_Chi_Minh
+        self.assertIn("cron: '0 4 * * *'", workflow)   # 11:00 Asia/Ho_Chi_Minh
+        self.assertIn("cron: '30 4 * * *'", workflow)  # 11:30 Asia/Ho_Chi_Minh
+        self.assertIn("cron: '0 5 * * 5'", workflow)   # Friday 12:00 Asia/Ho_Chi_Minh
+        self.assertNotIn("timezone:", workflow)
         self.assertIn("Resolve scheduled run type", workflow)
         self.assertIn("Check cloud production gate", workflow)
         self.assertIn("python tools/shadow_gate.py status", workflow)

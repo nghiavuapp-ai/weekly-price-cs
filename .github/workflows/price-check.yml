@@ -13,14 +13,11 @@ on:
           - weekly
           - shadow
   schedule:
-    - cron: '0 11 * * *'
-      timezone: "Asia/Ho_Chi_Minh"
-    - cron: '30 11 * * *'
-      timezone: "Asia/Ho_Chi_Minh"
-    - cron: '0 12 * * 5'
-      timezone: "Asia/Ho_Chi_Minh"
-    - cron: '17 13 * * *'
-      timezone: "Asia/Ho_Chi_Minh"
+    # Fixed UTC equivalents; Vietnam does not observe daylight saving time.
+    - cron: '0 4 * * *'
+    - cron: '30 4 * * *'
+    - cron: '0 5 * * 5'
+    - cron: '17 6 * * *'
 
 permissions:
   contents: read
@@ -54,9 +51,9 @@ jobs:
           SCHEDULE: ${{ github.event.schedule }}
         run: |
           if [ "$EVENT_NAME" != "schedule" ]; then run_type="$MANUAL_RUN_TYPE"
-          elif [ "$SCHEDULE" = "0 11 * * *" ]; then run_type="primary"
-          elif [ "$SCHEDULE" = "30 11 * * *" ]; then run_type="retry"
-          elif [ "$SCHEDULE" = "0 12 * * 5" ]; then run_type="weekly"
+          elif [ "$SCHEDULE" = "0 4 * * *" ]; then run_type="primary"
+          elif [ "$SCHEDULE" = "30 4 * * *" ]; then run_type="retry"
+          elif [ "$SCHEDULE" = "0 5 * * 5" ]; then run_type="weekly"
           else run_type="shadow"
           fi
           echo "run_type=$run_type" >> "$GITHUB_OUTPUT"
