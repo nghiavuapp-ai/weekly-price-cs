@@ -138,6 +138,18 @@ function isoDate(date: Date): string {
   return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-')
 }
 
+export function appleWeekIdForDate(value: string): string {
+  const anchor = parseLocalDate('2026-09-06')
+  const date = parseLocalDate(value)
+  const deltaWeeks = Math.floor((date.getTime() - anchor.getTime()) / (7 * 24 * 60 * 60 * 1000))
+  const serial = 26 * 52 + 3 * 13 + 10 + deltaWeeks
+  const fiscalYear = Math.floor(serial / 52)
+  const fiscalWeek = serial - fiscalYear * 52
+  const quarter = Math.floor(fiscalWeek / 13)
+  const quarterWeek = fiscalWeek - quarter * 13
+  return `W${quarterWeek + 1}Q${quarter + 1}FY${fiscalYear}`
+}
+
 export function selectDailyWeek(rows: PriceRow[], selectedDate: string): PriceRow[] {
   const end = parseLocalDate(selectedDate)
   const start = new Date(end)
@@ -177,6 +189,29 @@ export function buildDailyTimeline(rows: PriceRow[]): PriceRow[] {
     || left.model.localeCompare(right.model, 'vi') || left.partner.localeCompare(right.partner))
 }
 
+export function deriveFridayWeeklyRows(dailyRows: PriceRow[], fallbackWeeklyRows: PriceRow[]): PriceRow[] {
+  const fridayRows = dailyRows.filter((row) => row.granularity === 'daily' && parseLocalDate(row.date).getDay() === 5)
+  const derivedWeeks = new Set(fridayRows.map((row) => row.weekId ?? appleWeekIdForDate(row.date)))
+  const fallback = fallbackWeeklyRows.filter((row) => !row.weekId || !derivedWeeks.has(row.weekId))
+  const derived = fridayRows.map((row): PriceRow => {
+    const friday = parseLocalDate(row.date)
+    const weekStart = new Date(friday)
+    weekStart.setDate(friday.getDate() - friday.getDay())
+    const weekId = row.weekId ?? appleWeekIdForDate(row.date)
+    return {
+      ...row,
+      id: `friday-weekly:${row.id}`,
+      granularity: 'weekly',
+      periodKey: weekId,
+      weekId,
+      date: isoDate(weekStart),
+      sourceMethod: `daily_friday_snapshot:${row.sourceMethod ?? 'unknown'}`,
+    }
+  })
+  return [...fallback, ...derived].sort((left, right) => left.date.localeCompare(right.date)
+    || left.model.localeCompare(right.model, 'vi') || left.partner.localeCompare(right.partner))
+}
+
 export function assignDailyWeekIds(dailyRows: PriceRow[], weeklyRows: PriceRow[]): PriceRow[] {
   const periods = [...new Map(weeklyRows
     .filter((row) => row.granularity === 'weekly' && row.weekId)
@@ -191,6 +226,6 @@ export function assignDailyWeekIds(dailyRows: PriceRow[], weeklyRows: PriceRow[]
       end.setDate(start.getDate() + 6)
       return date >= start && date <= end
     })
-    return { ...row, weekId: match?.[0] ?? null }
+    return { ...row, weekId: match?.[0] ?? appleWeekIdForDate(row.date) }
   })
 }

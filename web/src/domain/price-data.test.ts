@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildDailyTimeline,
   assignDailyWeekIds,
+  deriveFridayWeeklyRows,
   filterRows,
   mapEffectiveRow,
   selectDailyWeek,
@@ -125,5 +126,44 @@ describe('price data domain', () => {
       priceVnd: 28_490_000,
       stale: true,
     })
+  })
+
+  it('uses the Friday Daily snapshot as Weekly and keeps older fallback weeks', () => {
+    const weekly = [
+      mapEffectiveRow(effectiveRow({ id: 'fallback-w10', period_key: 'W10Q4FY26', period_start: '2026-08-30', effective_price_vnd: 18_900_000 })),
+      mapEffectiveRow(effectiveRow({ id: 'fallback-w11', period_key: 'W11Q4FY26', period_start: '2026-09-06', effective_price_vnd: 18_500_000 })),
+    ]
+    const daily = buildDailyTimeline(assignDailyWeekIds([
+      mapEffectiveRow(effectiveRow({
+        id: 'thursday', run_id: 'daily-thursday', period_type: 'daily', period_key: '2026-09-10',
+        period_start: '2026-09-10', observed_at: '2026-09-10T11:00:00+07:00', effective_price_vnd: 18_200_000,
+      })),
+      mapEffectiveRow(effectiveRow({
+        id: 'friday', run_id: 'daily-friday', period_type: 'daily', period_key: '2026-09-11',
+        period_start: '2026-09-11', observed_at: '2026-09-11T15:30:00+07:00', effective_price_vnd: 17_900_000,
+      })),
+      mapEffectiveRow(effectiveRow({
+        id: 'saturday', run_id: 'daily-saturday', period_type: 'daily', period_key: '2026-09-12',
+        period_start: '2026-09-12', observed_at: '2026-09-12T11:00:00+07:00', effective_price_vnd: 17_500_000,
+      })),
+    ], weekly))
+
+    const derived = deriveFridayWeeklyRows(daily, weekly)
+
+    expect(derived).toHaveLength(2)
+    expect(derived.find((row) => row.weekId === 'W10Q4FY26')).toMatchObject({ id: 'fallback-w10', priceVnd: 18_900_000 })
+    expect(derived.find((row) => row.weekId === 'W11Q4FY26')).toMatchObject({
+      id: 'friday-weekly:friday', runId: 'daily-friday', granularity: 'weekly', periodKey: 'W11Q4FY26',
+      weekId: 'W11Q4FY26', date: '2026-09-06', observedDate: '2026-09-11', priceVnd: 17_900_000,
+    })
+  })
+
+  it('derives Apple Week IDs for Daily dates even before a Weekly crawl exists', () => {
+    const daily = [mapEffectiveRow(effectiveRow({
+      id: 'future-friday', period_type: 'daily', period_key: '2026-09-18', period_start: '2026-09-18',
+      observed_at: '2026-09-18T11:00:00+07:00', effective_price_vnd: 17_700_000,
+    }))]
+
+    expect(assignDailyWeekIds(daily, [])[0].weekId).toBe('W12Q4FY26')
   })
 })

@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 import type { EffectivePriceRow, PriceRow } from '../domain/price-data'
-import { assignDailyWeekIds, buildDailyTimeline, mapEffectiveRow } from '../domain/price-data'
+import { assignDailyWeekIds, buildDailyTimeline, deriveFridayWeeklyRows, mapEffectiveRow } from '../domain/price-data'
 import type { CrawlRun } from '../export/workbook-shape'
 
 export interface HealthCheck {
@@ -87,14 +87,16 @@ export async function loadDashboardData(
   if (client) return loadSupabaseData(client)
 
   const mapped = fixture.effectiveRows.map(mapEffectiveRow)
+  const fallbackWeekly = mapped.filter((row) => row.granularity === 'weekly')
+  const dailyRows = buildDailyTimeline(assignDailyWeekIds(
+    mapped.filter((row) => row.granularity === 'daily'),
+    fallbackWeekly,
+  ))
   return {
     source: 'fixture',
     generatedAt: fixture.generatedAt,
-    weeklyRows: mapped.filter((row) => row.granularity === 'weekly'),
-    dailyRows: buildDailyTimeline(assignDailyWeekIds(
-      mapped.filter((row) => row.granularity === 'daily'),
-      mapped.filter((row) => row.granularity === 'weekly'),
-    )),
+    weeklyRows: deriveFridayWeeklyRows(dailyRows, fallbackWeekly),
+    dailyRows,
     pendingRows: mapped.filter((row) => row.reviewStatus === 'pending'),
     health: fixture.health,
     runs: fixture.runs,
@@ -150,11 +152,12 @@ async function loadSupabaseData(client: SupabaseClient): Promise<DashboardSnapsh
   ])
   const mappedWeekly = weeklyEffective.map(mapEffectiveRow)
   const mappedDaily = dailyEffective.map(mapEffectiveRow)
+  const dailyRows = buildDailyTimeline(assignDailyWeekIds(mappedDaily, mappedWeekly))
   return {
     source: 'supabase',
     generatedAt: new Date().toISOString(),
-    weeklyRows: mappedWeekly,
-    dailyRows: buildDailyTimeline(assignDailyWeekIds(mappedDaily, mappedWeekly)),
+    weeklyRows: deriveFridayWeeklyRows(dailyRows, mappedWeekly),
+    dailyRows,
     pendingRows: pendingEffective.map(mapEffectiveRow),
     health,
     runs,

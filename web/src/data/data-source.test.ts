@@ -35,6 +35,26 @@ describe('dashboard data source', () => {
     expect(snapshot.health[0].healthy).toBe(false)
   })
 
+  it('replaces a workbook Weekly period with the effective Friday Daily snapshot', async () => {
+    const fixture: DashboardFixture = {
+      generatedAt: '2026-09-12T00:00:00+07:00',
+      effectiveRows: [
+        row({ effective_price_vnd: 16_990_000 }),
+        row({ id: 'daily-friday', run_id: 'daily-friday-run', period_type: 'daily', period_key: '2026-09-11',
+          period_start: '2026-09-11', observed_at: '2026-09-11T15:30:00+07:00', effective_price_vnd: 15_990_000 }),
+      ],
+      health: [], runs: [], products: [], retailers: [], productLinks: [], priceOverrides: [],
+    }
+
+    const snapshot = await loadDashboardData(null, fixture)
+
+    expect(snapshot.weeklyRows).toHaveLength(1)
+    expect(snapshot.weeklyRows[0]).toMatchObject({
+      id: 'friday-weekly:daily-friday', runId: 'daily-friday-run', periodKey: 'W11Q4FY26',
+      date: '2026-09-06', priceVnd: 15_990_000,
+    })
+  })
+
   it('loads Supabase data using only public crawl-run columns', async () => {
     class Query implements PromiseLike<{ data: unknown[], error: { message: string } | null }> {
       columns = ''
