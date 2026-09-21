@@ -1,0 +1,42 @@
+name: Repair Hoang Ha Daily Prices
+on:
+  workflow_dispatch:
+    inputs:
+      period_key:
+        description: Daily period key to correct (YYYY-MM-DD)
+        required: true
+        type: string
+      prices_json:
+        description: JSON list of product_name and price_vnd
+        required: true
+        type: string
+      reason:
+        description: Audit reason for the corrective run
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: repair-hoangha-${{ inputs.period_key }}
+  cancel-in-progress: false
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      PERIOD_KEY: ${{ inputs.period_key }}
+      PRICES_JSON: ${{ inputs.prices_json }}
+      REPAIR_REASON: ${{ inputs.reason }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.13"
+      - name: Install importer dependency
+        run: python -m pip install certifi
+      - name: Upload audited corrective observations
+        run: python tools/repair_hoangha_daily.py
