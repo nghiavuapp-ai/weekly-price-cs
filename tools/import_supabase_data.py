@@ -71,6 +71,10 @@ RETAILER_ALIASES = {
     "THEGIOIDIDONG": ("MW", "MW"),
     "VIETTEL": ("VIETTEL", "Viettel"),
     "VT": ("VIETTEL", "Viettel"),
+    "HH": ("HOANGHA", "Hoang Ha"),
+    "HOANG HA": ("HOANGHA", "Hoang Ha"),
+    "HOÀNG HÀ": ("HOANGHA", "Hoang Ha"),
+    "HOANGHA": ("HOANGHA", "Hoang Ha"),
 }
 TABLE_SORT_KEYS = {
     "products": lambda row: (row["name"], row["id"]),
