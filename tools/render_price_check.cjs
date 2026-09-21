@@ -75,6 +75,11 @@ function selectorCandidates(retailer) {
   if (retailer === "MW") return [".box_saving .bs_price strong", ".box_saving", ".box-price-present", ".price-one"];
   if (retailer === "FPT") return [".st-price-main", ".price-main", "[data-testid*='price']"];
   if (retailer === "Viettel") return [".version-product.active .txt-price", ".product-detail .price", ".product-info .price", ".product-price"];
+  if (retailer === "Hoang Ha") return [
+    ".item-option.selected[data-bestPrice]",
+    "[data-bestPrice].selected",
+    ".hoangha-price",
+  ];
   return ["[class*='price']"];
 }
 
