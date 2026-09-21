@@ -1380,6 +1380,20 @@ def is_trusted_render_method(method: str) -> bool:
     return any(method.startswith(prefix) for prefix in TRUSTED_RENDER_METHOD_PREFIXES)
 
 
+def can_trust_rendered_price(
+    retailer: str, render_method: str, render_action_status: str, rendered_price: int | None
+) -> bool:
+    if render_action_status != "IN_STOCK" or not rendered_price:
+        return False
+    if normalize_name(retailer) == "Hoang Ha":
+        return render_method in {
+            "rendered_dom:.item-option.selected[data-bestPrice]",
+            "rendered_dom:[data-bestPrice].selected",
+            "rendered_dom:.hoangha-price",
+        }
+    return True
+
+
 def is_trusted_oos_method(method: str) -> bool:
     return method in {
         "structured_offer_availability",
@@ -1609,7 +1623,9 @@ def run_render_backcheck(results: list[Result], report_dir: Path, enabled: bool 
                     "rendered_dom:.sale-price",
                     "rendered_dom:.box-product-price",
                 }
-                trusted_purchase_action = render_action_status == "IN_STOCK" and bool(rendered_price)
+                trusted_purchase_action = can_trust_rendered_price(
+                    retailer, render_method, render_action_status, rendered_price
+                )
                 if (
                     rendered_price
                     and (
