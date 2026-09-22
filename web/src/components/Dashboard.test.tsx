@@ -33,7 +33,8 @@ describe('Dashboard', () => {
     const user = userEvent.setup()
     render(<Dashboard snapshot={snapshot} onOpenAdmin={vi.fn()} />)
 
-    expect(screen.getByRole('heading', { name: 'Weekly Price' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Bảng giá' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Mở Bản tin Community Specialist' })).toHaveAttribute('href', 'https://daily-news-cs.vercel.app/')
     expect(screen.getByRole('combobox', { name: 'Tuần' })).toHaveValue('W11Q4FY26')
     expect(screen.getByText('16,49 tr')).toBeInTheDocument()
 
@@ -41,7 +42,7 @@ describe('Dashboard', () => {
     expect(screen.getByRole('heading', { name: 'Diễn biến giá theo Partner' })).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Xem Daily iPhone 17 128GB · W11Q4FY26' }))
-    expect(screen.getByRole('heading', { name: 'Daily Price' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Giá theo ngày' })).toBeInTheDocument()
     expect(screen.getByRole('combobox', { name: 'Ngày' })).toHaveValue('2026-09-10')
     expect(screen.getByText('Chưa kiểm tra lại', { exact: false })).toBeInTheDocument()
   })

@@ -30,8 +30,11 @@ export function DashboardToolbar(props: DashboardToolbarProps) {
   return (
     <header className="toolbar">
       <div className="brand">
-        <span className="brand-mark" aria-hidden="true">⌁</span>
-        <h1>{props.granularity === 'daily' ? 'Daily Price' : 'Weekly Price'}</h1>
+        <span className="brand-mark" aria-hidden="true">CS</span>
+        <div>
+          <span className="brand-kicker">Community Specialist</span>
+          <h1>{props.granularity === 'daily' ? 'Giá theo ngày' : 'Bảng giá'}</h1>
+        </div>
       </div>
       <div className="controls">
         {props.granularity === 'daily' && props.model !== 'All' && (
@@ -50,6 +53,7 @@ export function DashboardToolbar(props: DashboardToolbarProps) {
         <label className="field model"><span aria-hidden="true">◈</span><select aria-label="Model" value={props.model} onChange={(event) => props.onModel(event.target.value)}>{all('Tất cả model')}{props.models.map((item) => <option key={item}>{item}</option>)}</select></label>
         <label className="field"><span aria-hidden="true">◉</span><select aria-label="Partner" value={props.partner} onChange={(event) => props.onPartner(event.target.value)}>{all('Tất cả Partner')}{props.partners.map((item) => <option key={item}>{item}</option>)}</select></label>
       </div>
+      <a className="news-link" href="https://daily-news-cs.vercel.app/" aria-label="Mở Bản tin Community Specialist">Bản tin <span aria-hidden="true">↗</span></a>
     </header>
   )
 }
