@@ -53,7 +53,7 @@ export function DashboardToolbar(props: DashboardToolbarProps) {
         <label className="field model"><span aria-hidden="true">◈</span><select aria-label="Model" value={props.model} onChange={(event) => props.onModel(event.target.value)}>{all('Tất cả model')}{props.models.map((item) => <option key={item}>{item}</option>)}</select></label>
         <label className="field"><span aria-hidden="true">◉</span><select aria-label="Partner" value={props.partner} onChange={(event) => props.onPartner(event.target.value)}>{all('Tất cả Partner')}{props.partners.map((item) => <option key={item}>{item}</option>)}</select></label>
       </div>
-      <a className="news-link" href="https://daily-news-cs.vercel.app/" aria-label="Mở Bản tin Community Specialist">Bản tin <span aria-hidden="true">↗</span></a>
+      <a className="news-link" href="https://daily-news-cs.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Mở Bản tin Community Specialist">Bản tin <span aria-hidden="true">↗</span></a>
     </header>
   )
 }

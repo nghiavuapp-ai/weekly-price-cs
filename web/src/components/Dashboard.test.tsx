@@ -35,6 +35,7 @@ describe('Dashboard', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: 'Bảng giá' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Mở Bản tin Community Specialist' })).toHaveAttribute('href', 'https://daily-news-cs.vercel.app/')
+    expect(screen.getByRole('link', { name: 'Mở Bản tin Community Specialist' })).toHaveAttribute('target', '_blank')
     expect(screen.getByRole('combobox', { name: 'Tuần' })).toHaveValue('W11Q4FY26')
     expect(screen.getByText('16,49 tr')).toBeInTheDocument()
 
