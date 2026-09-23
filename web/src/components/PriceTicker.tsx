@@ -17,9 +17,10 @@ export function PriceTicker({ rows, priorRows, granularity }: PriceTickerProps) 
     return [`${partner} · ${row.model}: ${delta > 0 ? 'tăng' : 'giảm'} ${compactPrice(Math.abs(delta))}`]
   })
   const items = updates.length ? updates : [`Chưa có biến động giá ${granularity === 'daily' ? 'trong ngày' : 'trong tuần'} đang chọn`]
+  const tickerKey = `${granularity}:${items.join('|')}`
   return <section className="price-ticker" aria-label={`Điểm tin biến động giá ${granularity === 'daily' ? 'hàng ngày' : 'hàng tuần'}`}>
     <span className="ticker-label"><i aria-hidden="true">●</i> Price flash</span>
-    <div className="ticker-window"><div className="ticker-track">{[...items, ...items].map((item, index) => <span className="ticker-item" key={`${item}-${index}`}>{item}</span>)}</div></div>
+    <div className="ticker-window"><div className="ticker-track" key={tickerKey}>{[...items, ...items].map((item, index) => <span className="ticker-item" key={`${item}-${index}`}>{item}</span>)}</div></div>
     <p className="sr-only">{items.join('. ')}</p>
   </section>
 }
