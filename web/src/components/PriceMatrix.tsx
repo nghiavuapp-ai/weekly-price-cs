@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { PriceRow } from '../domain/price-data'
+import { sortModels, type PriceRow } from '../domain/price-data'
 
 export const compactPrice = (value: number | null) => value == null
   ? '—'
@@ -25,7 +25,7 @@ function priorPeriodLabel(row: PriceRow) {
 
 export function PriceMatrix({ rows, priorRows, partners, periodLabel, granularityLabel }: PriceMatrixProps) {
   const [activeChange, setActiveChange] = useState<string | null>(null)
-  const models = [...new Set(rows.map((row) => row.model))].sort((a, b) => a.localeCompare(b, 'vi'))
+  const models = sortModels([...new Set(rows.map((row) => row.model))])
   const priorByModelPartner = new Map(priorRows.map((row) => [changeKey(row.model, row.partner), row]))
   return (
     <section className="section panel" aria-labelledby="matrix-title">

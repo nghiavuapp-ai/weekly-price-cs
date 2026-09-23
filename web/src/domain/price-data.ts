@@ -64,6 +64,35 @@ export interface DashboardFilters {
   partner: string
 }
 
+// Presentation order is a product rule, not an alphabetical side effect.
+export const PARTNER_ORDER = ['MW', 'CPS', 'FPT', 'VIETTEL', 'SHOPDUNK', 'HOANGHA'] as const
+
+export function sortPartners(partners: string[]): string[] {
+  const rank = new Map<string, number>(PARTNER_ORDER.map((partner, index) => [partner, index]))
+  return [...partners].sort((left, right) => (rank.get(left) ?? 99) - (rank.get(right) ?? 99) || left.localeCompare(right, 'vi'))
+}
+
+function iPhoneRank(model: string): [number, number, number, string] | null {
+  if (/^iPhone\s+Air\b/i.test(model.trim())) {
+    return [17, 4, Number(/(\d+)\s*GB/i.exec(model)?.[1] ?? 0), model]
+  }
+  const match = /^iPhone\s+(\d+)(?:\s+(Pro Max|Pro|Plus|Air|mini)|e)?/i.exec(model.trim())
+  if (!match) return null
+  const segment = (match[2] ?? '').toLowerCase()
+  const segmentRank: Record<string, number> = { 'pro max': 0, pro: 1, '': 2, plus: 3, air: 4, e: 5, mini: 6 }
+  return [Number(match[1]), segmentRank[segment] ?? 9, Number(/(\d+)\s*GB/i.exec(model)?.[1] ?? 0), model]
+}
+
+export function sortModels(models: string[]): string[] {
+  return [...models].sort((left, right) => {
+    const a = iPhoneRank(left), b = iPhoneRank(right)
+    if (a && b) return b[0] - a[0] || a[1] - b[1] || b[2] - a[2] || a[3].localeCompare(b[3], 'vi')
+    if (a) return -1
+    if (b) return 1
+    return left.localeCompare(right, 'vi')
+  })
+}
+
 export function mapEffectiveRow(row: EffectivePriceRow): PriceRow {
   const isWeekly = row.period_type === 'weekly'
   const date = isWeekly ? row.period_start : row.period_key

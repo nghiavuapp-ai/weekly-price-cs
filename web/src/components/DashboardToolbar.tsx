@@ -49,9 +49,9 @@ export function DashboardToolbar(props: DashboardToolbarProps) {
         ) : (
           <label className="field"><CalendarIcon daily /><select aria-label="Ngày" value={props.date} onChange={(event) => props.onDate(event.target.value)}>{[...props.dates].reverse().map((date) => <option key={date} value={date}>{new Intl.DateTimeFormat('vi-VN').format(new Date(`${date}T00:00:00`))}</option>)}</select></label>
         )}
-        <label className="field"><span aria-hidden="true">◇</span><select aria-label="Danh mục" value={props.category} onChange={(event) => props.onCategory(event.target.value)}>{all('Tất cả Category')}{props.categories.map((item) => <option key={item}>{item}</option>)}</select></label>
+        <label className="field category"><span aria-hidden="true">◇</span><select aria-label="Danh mục" value={props.category} onChange={(event) => props.onCategory(event.target.value)}>{all('Tất cả Category')}{props.categories.map((item) => <option key={item}>{item}</option>)}</select></label>
         <label className="field model"><span aria-hidden="true">◈</span><select aria-label="Model" value={props.model} onChange={(event) => props.onModel(event.target.value)}>{all('Tất cả model')}{props.models.map((item) => <option key={item}>{item}</option>)}</select></label>
-        <label className="field"><span aria-hidden="true">◉</span><select aria-label="Partner" value={props.partner} onChange={(event) => props.onPartner(event.target.value)}>{all('Tất cả Partner')}{props.partners.map((item) => <option key={item}>{item}</option>)}</select></label>
+        <label className="field partner"><span aria-hidden="true">◉</span><select aria-label="Partner" value={props.partner} onChange={(event) => props.onPartner(event.target.value)}>{all('Tất cả Partner')}{props.partners.map((item) => <option key={item}>{item}</option>)}</select></label>
       </div>
       <a className="news-link" href="https://daily-news-cs.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Mở Bản tin Community Specialist">Bản tin <span aria-hidden="true">↗</span></a>
     </header>

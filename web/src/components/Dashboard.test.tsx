@@ -36,6 +36,9 @@ describe('Dashboard', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Bảng giá' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Mở Bản tin Community Specialist' })).toHaveAttribute('href', 'https://daily-news-cs.vercel.app/')
     expect(screen.getByRole('link', { name: 'Mở Bản tin Community Specialist' })).toHaveAttribute('target', '_blank')
+    expect(screen.getByRole('region', { name: 'Điểm tin biến động giá hàng tuần' })).toHaveTextContent('FPT · iPhone 17 128GB')
+    const partnerFilter = screen.getByRole('combobox', { name: 'Partner' }) as HTMLSelectElement
+    expect(Array.from(partnerFilter.options).map((option) => option.value)).toEqual(['All', 'MW', 'FPT'])
     expect(screen.getByRole('combobox', { name: 'Tuần' })).toHaveValue('W11Q4FY26')
     expect(screen.getByText('16,49 tr')).toBeInTheDocument()
 

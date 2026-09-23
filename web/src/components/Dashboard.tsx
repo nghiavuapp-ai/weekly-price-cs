@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react'
 
 import type { DashboardSnapshot } from '../data/data-source'
-import { filterRows, selectDailyWeek, selectWeeklyWindow, type Granularity } from '../domain/price-data'
+import { filterRows, selectDailyWeek, selectWeeklyWindow, sortModels, sortPartners, type Granularity } from '../domain/price-data'
 import { DashboardToolbar } from './DashboardToolbar'
 import { KpiStrip } from './KpiStrip'
 import { PartnerComparison } from './PartnerComparison'
 import { PriceMatrix } from './PriceMatrix'
 import { TrendChart } from './TrendChart'
+import { PriceTicker } from './PriceTicker'
 
 export interface DashboardProps {
   snapshot: DashboardSnapshot
@@ -27,10 +28,10 @@ export function Dashboard({ snapshot, onOpenAdmin }: DashboardProps) {
   const [model, setModel] = useState('All')
   const [partner, setPartner] = useState('All')
   const categories = useMemo(() => [...new Set([...snapshot.weeklyRows, ...snapshot.dailyRows].map((row) => row.category))].sort(), [snapshot])
-  const partners = useMemo(() => [...new Set([...snapshot.weeklyRows, ...snapshot.dailyRows].map((row) => row.partner))].sort(), [snapshot])
+  const partners = useMemo(() => sortPartners([...new Set([...snapshot.weeklyRows, ...snapshot.dailyRows].map((row) => row.partner))]), [snapshot])
   const source = granularity === 'weekly' ? snapshot.weeklyRows : snapshot.dailyRows
   const period = granularity === 'weekly' ? week : date
-  const availableModels = [...new Set(source.filter((row) => category === 'All' || row.category === category).map((row) => row.model))].sort((a, b) => a.localeCompare(b, 'vi'))
+  const availableModels = sortModels([...new Set(source.filter((row) => category === 'All' || row.category === category).map((row) => row.model))])
   const current = filterRows(source, { granularity, period, category, model, partner })
   const periodList = granularity === 'weekly' ? weeks : dates
   const priorPeriod = periodList[Math.max(0, periodList.indexOf(period) - 1)]
@@ -56,6 +57,7 @@ export function Dashboard({ snapshot, onOpenAdmin }: DashboardProps) {
       weeks={weeks} dates={dates} categories={categories} models={availableModels} partners={partners}
       dailyAvailable={dates.length > 0} onGranularity={selectGranularity} onWeek={setWeek} onDate={setDate}
       onCategory={(value) => { setCategory(value); setModel('All') }} onModel={setModel} onPartner={setPartner} />
+    <PriceTicker rows={current} priorRows={prior} granularity={granularity} />
     <div className="content">
       <KpiStrip rows={current} priorRows={prior} allPartnerCount={partners.length} granularity={granularity} />
       {model === 'All' ? <PriceMatrix rows={current} priorRows={prior} partners={partner === 'All' ? partners : [partner]} periodLabel={period} granularityLabel={granularity === 'weekly' ? 'tuần' : 'ngày'} /> : <>

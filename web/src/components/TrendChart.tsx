@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Granularity, PriceRow } from '../domain/price-data'
+import { sortPartners, type Granularity, type PriceRow } from '../domain/price-data'
 import { compactPrice } from './PriceMatrix'
 
 const colors: Record<string, string> = { FPT: '#4568a9', VIETTEL: '#cb7a3d', CPS: '#8864aa', MW: '#075e48', SHOPDUNK: '#248d85' }
@@ -15,7 +15,7 @@ interface TrendChartProps {
 export function TrendChart({ rows, model, granularity, dailyWeeks, onDrillDown }: TrendChartProps) {
   const [activePeriod, setActivePeriod] = useState<string | null>(null)
   const periods = [...new Set(rows.map((row) => granularity === 'weekly' ? row.weekId : row.date).filter(Boolean) as string[])]
-  const partners = [...new Set(rows.map((row) => row.partner))]
+  const partners = sortPartners([...new Set(rows.map((row) => row.partner))])
   const values = rows.flatMap((row) => row.priceVnd != null ? [row.priceVnd] : [])
   const min = values.length ? Math.min(...values) : 0
   const max = values.length ? Math.max(...values) : 1

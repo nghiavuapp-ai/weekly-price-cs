@@ -8,6 +8,8 @@ import {
   mapEffectiveRow,
   selectDailyWeek,
   selectWeeklyWindow,
+  sortModels,
+  sortPartners,
 } from './price-data'
 import type { EffectivePriceRow } from './price-data'
 
@@ -38,6 +40,11 @@ const effectiveRow = (overrides: Partial<EffectivePriceRow> = {}): EffectivePric
 })
 
 describe('price data domain', () => {
+  it('preserves the agreed retail and iPhone display order', () => {
+    expect(sortPartners(['SHOPDUNK', 'FPT', 'HOANGHA', 'CPS', 'VIETTEL', 'MW'])).toEqual(['MW', 'CPS', 'FPT', 'VIETTEL', 'SHOPDUNK', 'HOANGHA'])
+    expect(sortModels(['iPhone 16e 128GB', 'iPhone 18 Pro 256GB', 'iPhone 17 256GB', 'iPhone 18 Pro Max 256GB', 'iPhone Air 256GB'])).toEqual(['iPhone 18 Pro Max 256GB', 'iPhone 18 Pro 256GB', 'iPhone 17 256GB', 'iPhone Air 256GB', 'iPhone 16e 128GB'])
+  })
+
   it('maps corrected effective fields instead of raw observation fields', () => {
     const mapped = mapEffectiveRow(effectiveRow())
 
