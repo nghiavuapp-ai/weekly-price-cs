@@ -26,8 +26,11 @@ h1, h2 { font-family: inherit; letter-spacing: -.035em; }
 h1 { margin: 3px 0 0; font-size: 17px; line-height: 1; }
 .controls { display: grid; grid-template-columns: auto minmax(132px, .78fr) minmax(138px, .82fr) minmax(208px, 1.35fr) minmax(132px, .78fr); align-items: center; gap: 8px; min-width: 0; width: 100%; }
 .segmented { display: flex; padding: 3px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
-.segmented button, .back { border: 0; color: var(--muted); background: transparent; padding: 8px 11px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+.segmented button { border: 0; color: var(--muted); background: transparent; padding: 8px 11px; border-radius: 6px; font-size: 12px; font-weight: 700; }
 .segmented .active { color: #fff; background: var(--green); }
+.back { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 6px; min-height: 36px; margin-left: 6px; padding: 7px 9px; color: var(--muted); border: 1px solid transparent; border-radius: 7px; background: transparent; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.back:hover, .back:focus-visible { color: var(--green); border-color: #b8cdc2; background: #f5faf6; outline: none; }
+.back-label-compact { display: none; }
 .field { display: flex; align-items: center; gap: 7px; min-width: 0; padding: 0 10px; color: var(--muted); border: 1px solid var(--line); border-radius: 8px; background: #fff; }
 .field.model { max-width: none; }
 .field svg { width: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; }
@@ -157,8 +160,11 @@ footer { display: flex; justify-content: space-between; padding: 16px clamp(18px
   .brand { grid-column: 1; }
   .news-link { grid-column: 2; grid-row: 1; justify-self: end; min-height: 36px; padding-inline: 11px; }
   .controls { grid-column: 1 / -1; grid-row: 2; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
-  .segmented, .back { grid-column: 1 / -1; min-height: 44px; }
+  .segmented { grid-column: 1 / -1; min-height: 44px; }
   .segmented button { flex: 1; min-height: 36px; }
+  .back { min-height: 36px; margin-left: 0; padding-inline: 7px; font-size: 11px; }
+  .back-label { display: none; }
+  .back-label-compact { display: inline; }
   .field, .field.model, .field.category, .field.partner { grid-column: auto; min-width: 0; min-height: 44px; }
   .field select { min-width: 0; padding-block: 11px; }
   .price-ticker { grid-template-columns: 1fr; min-height: 34px; }

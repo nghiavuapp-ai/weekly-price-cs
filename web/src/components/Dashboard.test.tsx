@@ -48,6 +48,9 @@ describe('Dashboard', () => {
     await user.click(screen.getByRole('button', { name: 'Xem Daily iPhone 17 128GB · W11Q4FY26' }))
     expect(screen.getByRole('heading', { level: 1, name: 'Giá theo ngày' })).toBeInTheDocument()
     expect(screen.getByRole('combobox', { name: 'Ngày' })).toHaveValue('2026-09-10')
+    const backToWeekly = screen.getByRole('button', { name: /Quay lại Weekly/ })
+    expect(backToWeekly.closest('.brand')).not.toBeNull()
+    expect(backToWeekly.closest('.controls')).toBeNull()
     expect(screen.getByText('Chưa kiểm tra lại', { exact: false })).toBeInTheDocument()
   })
 

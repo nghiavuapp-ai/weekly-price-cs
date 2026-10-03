@@ -35,11 +35,11 @@ export function DashboardToolbar(props: DashboardToolbarProps) {
           <span className="brand-kicker">Community Specialist</span>
           <h1>{props.granularity === 'daily' ? 'Giá theo ngày' : 'Bảng giá'}</h1>
         </div>
+        {props.granularity === 'daily' && props.model !== 'All' && (
+          <button className="back" type="button" aria-label="Quay lại Weekly" onClick={() => props.onGranularity('weekly')}><span aria-hidden="true">←</span><span className="back-label">Quay lại Weekly</span><span className="back-label-compact">Weekly</span></button>
+        )}
       </div>
       <div className="controls">
-        {props.granularity === 'daily' && props.model !== 'All' && (
-          <button className="back" type="button" onClick={() => props.onGranularity('weekly')}>← Quay lại Weekly</button>
-        )}
         <div className="segmented" aria-label="Khung thời gian">
           <button type="button" className={props.granularity === 'weekly' ? 'active' : ''} aria-pressed={props.granularity === 'weekly'} onClick={() => props.onGranularity('weekly')}>Theo tuần</button>
           <button type="button" className={props.granularity === 'daily' ? 'active' : ''} aria-pressed={props.granularity === 'daily'} disabled={!props.dailyAvailable} onClick={() => props.onGranularity('daily')}>Theo ngày</button>
