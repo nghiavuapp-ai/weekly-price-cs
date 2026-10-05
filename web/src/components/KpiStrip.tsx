@@ -26,7 +26,7 @@ export function KpiStrip({ rows, priorRows, allPartnerCount, granularity }: KpiS
   }
   const cards = [
     { icon: '◌', label: 'Model check', value: String(models.length), note: `${outOfStock} model có OOS` },
-    { icon: '◉', label: 'Partner có giá', value: `${activePartners.length}/${allPartnerCount}`, note: `${rows.filter((row) => row.priceVnd != null).length.toLocaleString('vi-VN')} check có giá${granularity === 'daily' && stale ? ` · ${stale} chưa kiểm tra lại` : ''}` },
+    { icon: '◉', label: 'Partner có giá', value: `${activePartners.length}/${allPartnerCount}`, note: `${rows.filter((row) => row.priceVnd != null).length.toLocaleString('vi-VN')} check có giá${granularity === 'daily' && stale ? ` · ${stale} dùng ghi nhận gần nhất` : ''}` },
     { icon: '↕', label: granularity === 'daily' ? 'Thay đổi ngày' : 'Thay đổi tuần', value: String(changes.length), note: changes.length ? `${changes.filter((row) => {
       const previous = priorRows.find((candidate) => candidate.model === row.model && candidate.partner === row.partner)
       return previous?.priceVnd != null && row.priceVnd != null && row.priceVnd < previous.priceVnd
