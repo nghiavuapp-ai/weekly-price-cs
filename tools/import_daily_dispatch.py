@@ -97,10 +97,14 @@ def build_dispatch_payload(
     rows = list(csv.DictReader(io.StringIO(text, newline="")))
     if not rows:
         raise ValueError("Daily snapshot contains no observations")
-    return merge_payloads(
+    payload = merge_payloads(
         [build_daily_snapshot_payload(run, rows)],
         generated_at=generated_at,
     )
+    # Observation URLs are evidence, not new active crawl configuration.
+    for link in payload["product_links"]:
+        link["active"] = False
+    return payload
 
 
 def _generated_at() -> str:
@@ -122,7 +126,7 @@ def main() -> int:
     if is_terminal_run_uploaded(payload, supabase_url, service_key):
         print(json.dumps({"status": "duplicate_noop", "run_key": run["run_key"]}, sort_keys=True))
         return 0
-    counts = upsert_payload(payload, supabase_url, service_key)
+    counts = upsert_payload(payload, supabase_url, service_key, preserve_product_links=True)
     print(json.dumps({
         "status": "uploaded",
         "run_key": run["run_key"],

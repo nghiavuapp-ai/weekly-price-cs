@@ -84,6 +84,7 @@ class DailyDispatchImportTests(unittest.TestCase):
         self.assertEqual(payload["crawl_runs"][0]["run_key"], "daily-20260912-primary")
         self.assertEqual(payload["crawl_runs"][0]["change_count"], 2)
         self.assertEqual(len(payload["price_observations"]), 2)
+        self.assertTrue(all(link["active"] is False for link in payload["product_links"]))
         self.assertEqual(
             sorted(row["in_stock"] for row in payload["price_observations"]),
             [False, True],

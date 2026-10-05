@@ -270,6 +270,14 @@ class IdempotencyTests(unittest.TestCase):
         self.assertEqual(len(first["products"]), 1)
         self.assertEqual(len(first["product_links"]), 1)
 
+    def test_daily_link_upsert_preserves_existing_catalog_activation(self):
+        calls = []
+        upsert_payload({"product_links": [{"id": "variant", "active": False}]},
+                       "https://example.supabase.co", "server-secret",
+                       sender=lambda request, timeout: calls.append(request),
+                       preserve_product_links=True)
+        self.assertIn("resolution=ignore-duplicates", calls[0].get_header("Prefer"))
+
     def test_upload_batches_in_dependency_order_and_ignores_append_only_conflicts(self):
         calls = []
 

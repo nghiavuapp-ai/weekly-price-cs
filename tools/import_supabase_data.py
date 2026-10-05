@@ -582,6 +582,7 @@ def upsert_payload(
     service_key: str,
     batch_size: int = 500,
     sender: Callable[[urllib.request.Request, int], object] | None = None,
+    preserve_product_links: bool = False,
 ) -> dict[str, int]:
     """Upload batches through authenticated PostgREST upserts without logging credentials."""
     if not _clean_text(supabase_url) or not service_key:
@@ -595,6 +596,8 @@ def upsert_payload(
         rows = list(payload.get(table, []))
         counts[table] = len(rows)
         resolution = "ignore-duplicates" if table in APPEND_ONLY_TABLES else "merge-duplicates"
+        if table == "product_links" and preserve_product_links:
+            resolution = "ignore-duplicates"
         for start in range(0, len(rows), batch_size):
             batch = rows[start : start + batch_size]
             query = urllib.parse.urlencode({"on_conflict": "id"})

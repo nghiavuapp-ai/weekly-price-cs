@@ -2,6 +2,8 @@
 
 ## Tóm tắt hiện tại
 
+- **2026-10-05 — confirmed:** Daily dispatch treats observed color URLs as inactive evidence links, preserving existing catalog activation with insert-only link upserts. This prevents the one-active-link-per-model/retailer conflict without modifying historical observations or changing crawl URLs. Import regression tests cover inactive new links and preservation of existing activation.
+
 - **2026-09-23 — confirmed:** Production UI của `https://weekly-price-cs.vercel.app` đã được cập nhật từ commit `435dbc6`: nhận diện Community Specialist, tiêu đề/metadata/fav icon `Community Specialist - Bảng giá bán lẻ Apple`, liên kết `Bản tin` tới Daily News và token giao diện đồng nhất với Community Specialist. Không thay đổi crawler, Supabase, workbook hay quy tắc dữ liệu. Đã xác nhận build, 35 frontend tests và browser smoke trên production.
 - **2026-09-23 — confirmed:** Production UI từ commit `916164b` cân bằng lại cụm bộ lọc desktop theo lưới một hàng, giữ bố cục mobile không tràn ngang, và liên kết `Bản tin` mở trong tab mới. Không thay đổi crawler, Supabase, workbook hay quy tắc dữ liệu. Đã xác nhận 35 frontend tests, build và browser smoke ở desktop/mobile trên production.
 - **2026-09-23 — confirmed:** UI Price Check dùng một thứ tự hiển thị chung: `MW → CPS → FPT → Viettel → ShopDunk → Hoàng Hà`; iPhone sắp theo thế hệ/phân khúc mới đến cũ. Mobile filter là ba hàng control 44px đồng nhất. Dải `Price flash` dưới menu đọc biến động giá/OOS của kỳ đang chọn so với kỳ liền trước; không đổi dữ liệu crawler, Supabase hay workbook.
