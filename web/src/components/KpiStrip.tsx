@@ -12,7 +12,6 @@ export function KpiStrip({ rows, priorRows, allPartnerCount, granularity }: KpiS
   const models = [...new Set(rows.map((row) => row.model))]
   const activePartners = [...new Set(rows.filter((row) => row.priceVnd != null).map((row) => row.partner))]
   const outOfStock = new Set(rows.filter((row) => row.stockStatus === 'oos').map((row) => row.model)).size
-  const stale = rows.filter((row) => row.stale).length
   const changes = rows.filter((row) => {
     const previous = priorRows.find((candidate) => candidate.model === row.model && candidate.partner === row.partner)
     return previous?.priceVnd != null && row.priceVnd != null && previous.priceVnd !== row.priceVnd
@@ -26,7 +25,7 @@ export function KpiStrip({ rows, priorRows, allPartnerCount, granularity }: KpiS
   }
   const cards = [
     { icon: '◌', label: 'Model check', value: String(models.length), note: `${outOfStock} model có OOS` },
-    { icon: '◉', label: 'Partner có giá', value: `${activePartners.length}/${allPartnerCount}`, note: `${rows.filter((row) => row.priceVnd != null).length.toLocaleString('vi-VN')} check có giá${granularity === 'daily' && stale ? ` · ${stale} dùng ghi nhận gần nhất` : ''}` },
+    { icon: '◉', label: 'Partner có giá', value: `${activePartners.length}/${allPartnerCount}`, note: `${rows.filter((row) => row.priceVnd != null).length.toLocaleString('vi-VN')} check có giá` },
     { icon: '↕', label: granularity === 'daily' ? 'Thay đổi ngày' : 'Thay đổi tuần', value: String(changes.length), note: changes.length ? `${changes.filter((row) => {
       const previous = priorRows.find((candidate) => candidate.model === row.model && candidate.partner === row.partner)
       return previous?.priceVnd != null && row.priceVnd != null && row.priceVnd < previous.priceVnd

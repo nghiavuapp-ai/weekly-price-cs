@@ -51,7 +51,7 @@ describe('Dashboard', () => {
     const backToWeekly = screen.getByRole('button', { name: /Quay lại Weekly/ })
     expect(backToWeekly.closest('.brand')).not.toBeNull()
     expect(backToWeekly.closest('.controls')).toBeNull()
-    expect(screen.getByText('Chưa kiểm tra lại', { exact: false })).toBeInTheDocument()
+    expect(screen.queryByText(/Ghi nhận gần nhất|Chưa kiểm tra lại/i)).not.toBeInTheDocument()
   })
 
   it('keeps review warnings and Excel downloads out of the public dashboard', () => {

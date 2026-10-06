@@ -24,7 +24,7 @@ export function TrendChart({ rows, model, granularity, dailyWeeks, onDrillDown }
   const y = (value: number) => 275 - (value - (min - range * 0.12)) / (range * 1.24) * 235
   return (
     <section className="section panel" aria-labelledby="trend-title">
-      <div className="section-head"><div><h2 id="trend-title">{granularity === 'weekly' ? 'Diễn biến giá theo Partner' : 'Diễn biến giá theo ngày'}</h2><p>{model} · {periods.length}/{granularity === 'weekly' ? '13 tuần' : '7 ngày'}</p></div><div className="legend">{partners.map((partner) => <span key={partner}><i className="dot" style={{ background: colors[partner] ?? '#60776c' }} />{partner}</span>)}{granularity === 'daily' && <span>○ Ghi nhận gần nhất</span>}</div></div>
+      <div className="section-head"><div><h2 id="trend-title">{granularity === 'weekly' ? 'Diễn biến giá theo Partner' : 'Diễn biến giá theo ngày'}</h2><p>{model} · {periods.length}/{granularity === 'weekly' ? '13 tuần' : '7 ngày'}</p></div><div className="legend">{partners.map((partner) => <span key={partner}><i className="dot" style={{ background: colors[partner] ?? '#60776c' }} />{partner}</span>)}</div></div>
       <div className="chart-wrap">
         {values.length ? <div className="chart-stage"><svg viewBox="0 0 1000 310" role="img" aria-label={`Biểu đồ ${model}`}>
           {[0, 1, 2, 3, 4].map((index) => <line key={index} x1="60" x2="940" y1={30 + index * 58} y2={30 + index * 58} stroke="#e3ebe4" />)}

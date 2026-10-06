@@ -63,8 +63,8 @@ export function PriceMatrix({ rows, priorRows, partners, periodLabel, granularit
                   <b className={delta > 0 ? 'up' : 'down'}>{delta > 0 ? '↑ Tăng' : '↓ Giảm'} {compactPrice(Math.abs(delta))}</b>
                 </span>}
               </button> : null
-              if (row.stockStatus === 'oos') return <td className="oos" key={partners[index]}>OOS{row.stale && <small>Ghi nhận gần nhất · {row.observedDate}</small>}</td>
-              return <td className={`${row.priceVnd === lowest ? 'lowest ' : ''}${row.stale ? 'stale ' : ''}${changed ? 'price-changed ' : ''}`} key={partners[index]}>{compactPrice(row.priceVnd)}{marker}{row.stale && <small>Ghi nhận gần nhất · {row.observedDate}</small>}</td>
+              if (row.stockStatus === 'oos') return <td className="oos" key={partners[index]}>OOS</td>
+              return <td className={`${row.priceVnd === lowest ? 'lowest ' : ''}${row.stale ? 'stale ' : ''}${changed ? 'price-changed ' : ''}`} key={partners[index]}>{compactPrice(row.priceVnd)}{marker}</td>
             })}</tr>
           }) : <tr><td className="empty" colSpan={partners.length + 1}>Không có dữ liệu cho bộ lọc hiện tại.</td></tr>}</tbody>
         </table>
