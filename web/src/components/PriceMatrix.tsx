@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import type { PriceRow } from '../domain/price-data'
 import { priceChange, sortModels } from '../domain/price-data'
 
@@ -26,6 +27,12 @@ function priorPeriodLabel(row: PriceRow) {
 
 export function PriceMatrix({ rows, priorRows, partners, periodLabel, granularityLabel }: PriceMatrixProps) {
   const [activeChange, setActiveChange] = useState<string | null>(null)
+  const [tooltipPosition, setTooltipPosition] = useState({ left: 0, top: 0 })
+  const showChange = (key: string, target: HTMLElement) => {
+    const rect = target.getBoundingClientRect()
+    setTooltipPosition({ left: Math.max(8, Math.min(window.innerWidth - 260, rect.right - 230)), top: Math.max(8, rect.top - 120) })
+    setActiveChange(key)
+  }
   const models = sortModels([...new Set(rows.map((row) => row.model))])
   const priorByModelPartner = new Map(priorRows.map((row) => [changeKey(row.model, row.partner), row]))
   return (
@@ -53,18 +60,18 @@ export function PriceMatrix({ rows, priorRows, partners, periodLabel, granularit
                 className="change-marker"
                 aria-label={changeLabel}
                 aria-describedby={activeChange === key ? `change-${row.id}` : undefined}
-                onMouseEnter={() => setActiveChange(key)}
+                onMouseEnter={(event) => showChange(key, event.currentTarget)}
                 onMouseLeave={() => setActiveChange(null)}
-                onFocus={() => setActiveChange(key)}
+                onFocus={(event) => showChange(key, event.currentTarget)}
                 onBlur={() => setActiveChange(null)}
               >
                 !
-                {activeChange === key && <span className="change-tooltip" id={`change-${row.id}`} role="tooltip">
+                {activeChange === key && createPortal(<span className="change-tooltip" id={`change-${row.id}`} role="tooltip" style={{ position: 'fixed', left: tooltipPosition.left, top: tooltipPosition.top, right: 'auto', bottom: 'auto', pointerEvents: 'none' }}>
                   <strong>{partnerLabel}</strong>
                   <span>Lần check trước · {priorPeriodLabel(prior)}</span>
                   <span>{prior.stockStatus === 'oos' ? 'OOS' : compactPrice(prior.priceVnd)} → {row.stockStatus === 'oos' ? 'OOS' : compactPrice(row.priceVnd)}</span>
                   {delta != null ? <b className={delta > 0 ? 'up' : 'down'}>{delta > 0 ? '↑ Tăng' : '↓ Giảm'} {compactPrice(Math.abs(delta))}</b> : <b className={change?.kind === 'restocked' ? 'down' : 'up'}>{stockLabel}</b>}
-                </span>}
+                </span>, document.body)}
               </button> : null
               if (row.stockStatus !== 'in_stock' || row.priceVnd == null) return <td className={`oos ${changed ? 'price-changed' : ''}`} key={partners[index]}>OOS{marker}</td>
               return <td className={`${row.priceVnd === lowest ? 'lowest ' : ''}${row.stale ? 'stale ' : ''}${changed ? 'price-changed ' : ''}`} key={partners[index]}>{compactPrice(row.priceVnd)}{marker}</td>

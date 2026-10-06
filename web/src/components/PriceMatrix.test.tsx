@@ -41,6 +41,7 @@ describe('PriceMatrix', () => {
     fireEvent.mouseEnter(marker)
     expect(screen.getByRole('tooltip')).toHaveTextContent('Lần check trước · 05/10/2026')
     expect(screen.getByRole('tooltip')).toHaveTextContent('OOS → 19 tr')
+    expect(screen.getByRole('tooltip').parentElement).toBe(document.body)
   })
   it('marks new OOS in the OOS cell', () => {
     render(<PriceMatrix rows={[makeRow({ stockStatus: 'oos', priceVnd: null })]} priorRows={[makeRow()]} partners={['FPT']} periodLabel="2026-10-06" granularityLabel="Ngày" />)
