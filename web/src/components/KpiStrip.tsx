@@ -1,4 +1,5 @@
 import type { Granularity, PriceRow } from '../domain/price-data'
+import { priceChange } from '../domain/price-data'
 import { compactPrice } from './PriceMatrix'
 
 interface KpiStripProps {
@@ -14,8 +15,8 @@ export function KpiStrip({ rows, priorRows, allPartnerCount, granularity }: KpiS
   const outOfStock = new Set(rows.filter((row) => row.stockStatus === 'oos').map((row) => row.model)).size
   const changes = rows.filter((row) => {
     const previous = priorRows.find((candidate) => candidate.model === row.model && candidate.partner === row.partner)
-    return previous?.priceVnd != null && row.priceVnd != null && previous.priceVnd !== row.priceVnd
-  })
+    return priceChange(row, previous)
+  }).map((row) => priceChange(row, priorRows.find((candidate) => candidate.model === row.model && candidate.partner === row.partner))!)
   let largestGap = 0
   let gapModel = ''
   for (const model of models) {
@@ -26,10 +27,7 @@ export function KpiStrip({ rows, priorRows, allPartnerCount, granularity }: KpiS
   const cards = [
     { icon: '◌', label: 'Model check', value: String(models.length), note: `${outOfStock} model có OOS` },
     { icon: '◉', label: 'Partner có giá', value: `${activePartners.length}/${allPartnerCount}`, note: `${rows.filter((row) => row.priceVnd != null).length.toLocaleString('vi-VN')} check có giá` },
-    { icon: '↕', label: granularity === 'daily' ? 'Thay đổi ngày' : 'Thay đổi tuần', value: String(changes.length), note: changes.length ? `${changes.filter((row) => {
-      const previous = priorRows.find((candidate) => candidate.model === row.model && candidate.partner === row.partner)
-      return previous?.priceVnd != null && row.priceVnd != null && row.priceVnd < previous.priceVnd
-    }).length} giảm · ${changes.length} tổng` : 'Không có thay đổi' },
+    { icon: '↕', label: granularity === 'daily' ? 'Thay đổi ngày' : 'Thay đổi tuần', value: String(changes.length), note: changes.length ? `${changes.filter((change) => change.kind === 'decrease').length} giảm · ${changes.filter((change) => change.kind === 'increase').length} tăng · ${changes.filter((change) => change.delta == null).length} tồn kho` : 'Không có thay đổi' },
     { icon: '⇄', label: 'Chênh lệch lớn nhất', value: largestGap ? compactPrice(largestGap) : '—', note: gapModel || 'Cần ít nhất 2 Partner có giá' },
   ]
   return <section className="section kpis" aria-label="Chỉ số tổng quan">{cards.map((card) => (

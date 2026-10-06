@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { PriceRow } from '../domain/price-data'
 import { PriceMatrix } from './PriceMatrix'
+import { KpiStrip } from './KpiStrip'
 
 const makeRow = (overrides: Partial<PriceRow> = {}): PriceRow => ({
   id: 'price-1',
@@ -33,6 +34,29 @@ const makeRow = (overrides: Partial<PriceRow> = {}): PriceRow => ({
 })
 
 describe('PriceMatrix', () => {
+  it('marks restocking against the previous day, without inventing a price delta', () => {
+    render(<PriceMatrix rows={[makeRow()]} priorRows={[makeRow({ date: '2026-10-05', periodKey: '2026-10-05', stockStatus: 'oos', priceVnd: null })]} partners={['FPT']} periodLabel="2026-10-06" granularityLabel="Ngày" />)
+    const marker = screen.getByRole('button', { name: /FPT có hàng trở lại/i })
+    expect(marker.closest('td')).toHaveClass('price-changed')
+    fireEvent.mouseEnter(marker)
+    expect(screen.getByRole('tooltip')).toHaveTextContent('Lần check trước · 05/10/2026')
+    expect(screen.getByRole('tooltip')).toHaveTextContent('OOS → 19 tr')
+  })
+  it('marks new OOS in the OOS cell', () => {
+    render(<PriceMatrix rows={[makeRow({ stockStatus: 'oos', priceVnd: null })]} priorRows={[makeRow()]} partners={['FPT']} periodLabel="2026-10-06" granularityLabel="Ngày" />)
+    const marker = screen.getByRole('button', { name: /FPT chuyển sang OOS/i })
+    expect(marker.closest('td')).toHaveClass('oos', 'price-changed')
+    fireEvent.mouseEnter(marker)
+    expect(screen.getByRole('tooltip')).toHaveTextContent('19 tr → OOS')
+  })
+  it('counts stock transitions as daily changes alongside numeric changes', () => {
+    const rows = [makeRow(), makeRow({ model: 'iPhone 16 128GB', priceVnd: null, stockStatus: 'oos' }), makeRow({ model: 'iPhone 17 256GB', priceVnd: 18000000 })]
+    const priorRows = [makeRow({ stockStatus: 'oos', priceVnd: null }), makeRow({ model: 'iPhone 16 128GB' }), makeRow({ model: 'iPhone 17 256GB' })]
+    render(<KpiStrip rows={rows} priorRows={priorRows} allPartnerCount={1} granularity="daily" />)
+    const card = screen.getByText('Thay đổi ngày').closest('article')!
+    expect(card.querySelector('.kpi-value')).toHaveTextContent('3')
+    expect(card).toHaveTextContent('1 giảm · 0 tăng · 2 tồn kho')
+  })
   it('shows a no-percent tooltip for a numeric price increase versus the prior check', () => {
     render(
       <PriceMatrix

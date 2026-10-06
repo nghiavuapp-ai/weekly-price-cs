@@ -65,6 +65,15 @@ export interface DashboardFilters {
 }
 
 // Presentation order is a product rule, not an alphabetical side effect.
+export function priceChange(row: PriceRow, prior?: PriceRow): { kind: 'increase' | 'decrease' | 'restocked' | 'oos', delta: number | null } | null {
+  if (!prior || !row.fetchOk || !prior.fetchOk) return null
+  if (prior.stockStatus === 'oos' && row.stockStatus === 'in_stock' && row.priceVnd != null) return { kind: 'restocked', delta: null }
+  if (prior.stockStatus === 'in_stock' && row.stockStatus === 'oos') return { kind: 'oos', delta: null }
+  if (row.stockStatus !== 'in_stock' || prior.stockStatus !== 'in_stock' || row.priceVnd == null || prior.priceVnd == null) return null
+  const delta = row.priceVnd - prior.priceVnd
+  return delta === 0 ? null : { kind: delta > 0 ? 'increase' : 'decrease', delta }
+}
+
 export const PARTNER_ORDER = ['MW', 'CPS', 'FPT', 'VIETTEL', 'SHOPDUNK', 'HOANGHA'] as const
 
 export function sortPartners(partners: string[]): string[] {

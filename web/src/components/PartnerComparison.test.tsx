@@ -32,6 +32,10 @@ const row: PriceRow = {
 }
 
 describe('PartnerComparison', () => {
+  it('shows stock changes in the prior-period comparison', () => {
+    render(<PartnerComparison rows={[row]} priorRows={[{ ...row, stockStatus: 'oos', priceVnd: null }]} model={row.model} />)
+    expect(screen.getByText('Có hàng trở lại')).toBeInTheDocument()
+  })
   it('uses five analytical columns and omits the status column', () => {
     render(<PartnerComparison rows={[row]} priorRows={[]} model={row.model} />)
 
