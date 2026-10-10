@@ -80,6 +80,21 @@ export interface DashboardSnapshot {
   corrections: CorrectionAudit[]
 }
 
+export function preferNewestSnapshot(remote: DashboardSnapshot, saved: DashboardSnapshot): DashboardSnapshot {
+  const newestDate = (snapshot: DashboardSnapshot) => snapshot.dailyRows.reduce(
+    (latest, row) => row.date > latest ? row.date : latest, '',
+  )
+  const remoteDate = newestDate(remote)
+  const savedDate = newestDate(saved)
+  if (savedDate > remoteDate) return saved
+  if (savedDate === remoteDate && savedDate) {
+    const remoteRuns = new Set(remote.runs.filter((run) => run.completed_at?.slice(0, 10) === savedDate).map((run) => run.id))
+    const savedRuns = saved.runs.filter((run) => run.completed_at?.slice(0, 10) === savedDate).map((run) => run.id)
+    if (savedRuns.some((runId) => !remoteRuns.has(runId))) return saved
+  }
+  return remote
+}
+
 export async function loadDashboardData(
   client: SupabaseClient | null,
   fixture: DashboardFixture,

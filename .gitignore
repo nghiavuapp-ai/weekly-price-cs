@@ -22,3 +22,5 @@ outputs/daily/reviews/
 outputs/daily/setup/
 dashboard-gia-ban-le-clean.html
 dashboard-data.js
+.vercel
+.env*

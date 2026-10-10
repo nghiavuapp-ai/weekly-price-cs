@@ -2,6 +2,8 @@
 
 ## Tóm tắt hiện tại
 
+- **2026-10-10 — confirmed:** Supabase Data API trả HTTP 402 `exceed_egress_quota`; database vẫn còn lịch sử nhưng GitHub Actions không nhập được run 10/10 và UI cũ rơi về fixture chỉ có 10/09. Production Vercel đã được khôi phục bằng fixture tạo từ workbook Apple Daily hiện hành: 30 ngày Daily đến 10/10 (run primary 300 target và retry 1 target), 13 kỳ Weekly. UI ưu tiên bản chốt đã lưu nếu Supabase còn thiếu ngày/run mới nhất, rồi tự dùng Realtime khi DB bắt kịp. Đây là khôi phục hiển thị, **không phải** xác nhận import 10/10 vào Supabase. Project owner cần xử lý quota egress trong Supabase Billing/Usage; không tự nâng gói hoặc bỏ spend cap. Khi API trở lại, import hai run 10/10 theo quy trình idempotent và đối chiếu website.
+
 - **2026-10-05 — confirmed:** Daily dispatch treats observed color URLs as inactive evidence links, preserving existing catalog activation with insert-only link upserts. This prevents the one-active-link-per-model/retailer conflict without modifying historical observations or changing crawl URLs. Import regression tests cover inactive new links and preservation of existing activation.
 
 - **2026-09-23 — confirmed:** Production UI của `https://weekly-price-cs.vercel.app` đã được cập nhật từ commit `435dbc6`: nhận diện Community Specialist, tiêu đề/metadata/fav icon `Community Specialist - Bảng giá bán lẻ Apple`, liên kết `Bản tin` tới Daily News và token giao diện đồng nhất với Community Specialist. Không thay đổi crawler, Supabase, workbook hay quy tắc dữ liệu. Đã xác nhận build, 35 frontend tests và browser smoke trên production.

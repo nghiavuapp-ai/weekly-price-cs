@@ -65,6 +65,6 @@ export function Dashboard({ snapshot, onOpenAdmin }: DashboardProps) {
         <PartnerComparison rows={current} priorRows={prior} model={model} />
       </>}
     </div>
-    <footer><span>Dữ liệu: {snapshot.source === 'supabase' ? 'Realtime' : 'Bản xem trước'}</span><button className="quiet-admin" type="button" onClick={onOpenAdmin} aria-label="Mở công cụ sửa giá">Sửa giá</button></footer>
+    <footer><span>Dữ liệu: {snapshot.source === 'supabase' ? 'Realtime' : 'Bản chốt đã lưu'}</span><button className="quiet-admin" type="button" onClick={onOpenAdmin} aria-label="Mở công cụ sửa giá">Sửa giá</button></footer>
   </main>
 }

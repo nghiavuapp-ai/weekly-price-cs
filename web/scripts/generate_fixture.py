@@ -3,16 +3,14 @@
 from __future__ import annotations
 
 import json
+import argparse
 import sys
+from datetime import datetime
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
 WEB_ROOT = ROOT / "web"
-sys.path.insert(0, str(ROOT / "tools"))
-
-from import_supabase_data import build_project_payload  # noqa: E402
-
 
 def effective_row(observation: dict, products: dict[str, dict], retailers: dict[str, dict]) -> dict:
     product = products[observation["product_id"]]
@@ -44,7 +42,15 @@ def effective_row(observation: dict, products: dict[str, dict], retailers: dict[
 
 
 def main() -> None:
-    payload = build_project_payload(ROOT, generated_at="2026-09-11T00:00:00+07:00")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source-root", type=Path, default=ROOT)
+    args = parser.parse_args()
+    source_root = args.source_root.resolve()
+    tools_dir = source_root / "platform" / "cloud" / "tools" if source_root != ROOT else ROOT / "tools"
+    sys.path.insert(0, str(tools_dir))
+    from import_supabase_data import build_project_payload
+
+    payload = build_project_payload(source_root, generated_at=datetime.now().astimezone().isoformat())
     observations = payload["price_observations"]
     weekly_periods = sorted({
         row["period_start"] for row in observations if row["period_type"] == "weekly"

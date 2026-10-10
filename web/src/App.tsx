@@ -3,7 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 
 import fixture from './data/fixture.json'
 import { insertCorrection, saveConfig, signInAdmin, type ConfigTable } from './data/admin-repository'
-import { loadDashboardData, type DashboardFixture, type DashboardSnapshot } from './data/data-source'
+import { loadDashboardData, preferNewestSnapshot, type DashboardFixture, type DashboardSnapshot } from './data/data-source'
 import type { CorrectionPayload } from './domain/corrections'
 import type { Granularity } from './domain/price-data'
 import { downloadWorkbook } from './export/download'
@@ -22,8 +22,11 @@ export default function App() {
   const sourceFixture = fixture as DashboardFixture
   const load = useCallback(async () => {
     try {
-      setSnapshot(await withFutureJwtRetry(() => loadDashboardData(client, sourceFixture)))
-      setError('')
+      const remote = await withFutureJwtRetry(() => loadDashboardData(client, sourceFixture))
+      const saved = await loadDashboardData(null, sourceFixture)
+      const selected = preferNewestSnapshot(remote, saved)
+      setSnapshot(selected)
+      setError(selected.source === 'fixture' ? 'Nguồn trực tuyến chưa đồng bộ đủ; đang hiển thị bản chốt đã lưu.' : '')
     }
     catch (cause) { setError(cause instanceof Error ? cause.message : 'Không thể tải dữ liệu.'); setSnapshot(await loadDashboardData(null, sourceFixture)) }
   }, [])

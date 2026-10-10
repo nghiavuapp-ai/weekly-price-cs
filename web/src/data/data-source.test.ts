@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 import type { EffectivePriceRow } from '../domain/price-data'
-import { loadDashboardData, type DashboardFixture } from './data-source'
+import { loadDashboardData, preferNewestSnapshot, type DashboardFixture } from './data-source'
 
 const row = (overrides: Partial<EffectivePriceRow> = {}): EffectivePriceRow => ({
   id: 'weekly', run_id: 'run-weekly', product_id: 'product-1', product_name: 'iPhone 17 128GB',
@@ -14,6 +14,14 @@ const row = (overrides: Partial<EffectivePriceRow> = {}): EffectivePriceRow => (
 })
 
 describe('dashboard data source', () => {
+  it('keeps a newer dated local snapshot until the remote import catches up', () => {
+    const base = { generatedAt: '', weeklyRows: [], pendingRows: [], health: [], runs: [], products: [], retailers: [], productLinks: [], priceOverrides: [], corrections: [] }
+    const remote = { ...base, source: 'supabase' as const, dailyRows: [{ date: '2026-10-09' }] }
+    const local = { ...base, source: 'fixture' as const, dailyRows: [{ date: '2026-10-10' }] }
+    expect(preferNewestSnapshot(remote as never, local as never)).toBe(local)
+    expect(preferNewestSnapshot({ ...remote, dailyRows: [{ date: '2026-10-10' }] } as never, local as never).source).toBe('supabase')
+  })
+
   it('uses the generated fixture without credentials and preserves pending failures separately from stale display rows', async () => {
     const fixture: DashboardFixture = {
       generatedAt: '2026-09-11T00:00:00+07:00',
