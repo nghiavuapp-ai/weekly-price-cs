@@ -28,7 +28,7 @@ export default function App() {
       setSnapshot(selected)
       setError(selected.source === 'fixture' ? 'Nguồn trực tuyến chưa đồng bộ đủ; đang hiển thị bản chốt đã lưu.' : '')
     }
-    catch (cause) { setError(cause instanceof Error ? cause.message : 'Không thể tải dữ liệu.'); setSnapshot(await loadDashboardData(null, sourceFixture)) }
+    catch { setError('Dữ liệu thời gian thực tạm gián đoạn; bảng đang hiển thị bản chốt đã lưu.'); setSnapshot(await loadDashboardData(null, sourceFixture)) }
   }, [])
   useEffect(() => {
     void load()

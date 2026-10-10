@@ -20,6 +20,12 @@ describe('dashboard data source', () => {
     const local = { ...base, source: 'fixture' as const, dailyRows: [{ date: '2026-10-10' }] }
     expect(preferNewestSnapshot(remote as never, local as never)).toBe(local)
     expect(preferNewestSnapshot({ ...remote, dailyRows: [{ date: '2026-10-10' }] } as never, local as never).source).toBe('supabase')
+    const primary = { id: 'primary', completed_at: '2026-10-10T11:00:00+07:00' }
+    const retry = { id: 'retry', completed_at: '2026-10-10T15:00:00+07:00' }
+    const savedWithRetry = { ...local, runs: [primary, retry] }
+    const remotePrimaryOnly = { ...remote, dailyRows: [{ date: '2026-10-10' }], runs: [primary] }
+    expect(preferNewestSnapshot(remotePrimaryOnly as never, savedWithRetry as never)).toBe(savedWithRetry)
+    expect(preferNewestSnapshot({ ...remotePrimaryOnly, runs: [primary, retry] } as never, savedWithRetry as never).source).toBe('supabase')
   })
 
   it('uses the generated fixture without credentials and preserves pending failures separately from stale display rows', async () => {
