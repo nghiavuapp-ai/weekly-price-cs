@@ -19,9 +19,11 @@ from pathlib import Path
 
 import certifi
 
-from import_supabase_data import build_daily_snapshot_payload, merge_payloads, upsert_payload
+from import_supabase_data import build_daily_snapshot_payload, merge_payloads
+from daily_import_contract import build_manifest, import_daily_atomically, read_observations, verify_observations
 
 
+DAILY_ATOMIC_IMPORT_PROTOCOL = 1
 MAX_SNAPSHOT_BYTES = 2_000_000
 TERMINAL_RUN_STATUSES = {"success", "partial", "failed", "no_retry", "cancelled"}
 
@@ -29,8 +31,7 @@ TERMINAL_RUN_STATUSES = {"success", "partial", "failed", "no_retry", "cancelled"
 def load_dispatch_inputs(environment: Mapping[str, str], event_path: Path | None) -> dict[str, str]:
     """Read workflow inputs from the event file so large snapshots stay out of step env logs."""
     if event_path and event_path.is_file():
-        event = json.loads(event_path.read_text(encoding="utf-8"))
-        values = event.get("inputs", {})
+        values = json.loads(event_path.read_text(encoding="utf-8")).get("inputs", {})
     else:
         values = {
             "snapshot_gzip_b64": environment.get("DAILY_SNAPSHOT_GZIP_B64", ""),
@@ -55,7 +56,6 @@ def is_terminal_run_uploaded(
     *,
     sender=None,
 ) -> bool:
-    """Return true when the deterministic Daily run already exists in a terminal state."""
     runs = list(payload.get("crawl_runs", []))
     if not runs:
         raise ValueError("Daily payload has no crawl run")
@@ -66,7 +66,14 @@ def is_terminal_run_uploaded(
         headers={"apikey": service_key, "Authorization": f"Bearer {service_key}"},
     )
     rows = (sender or _default_json_sender)(request, 60)
-    return bool(rows and rows[0].get("status") in TERMINAL_RUN_STATUSES)
+    if not rows or rows[0].get("status") not in TERMINAL_RUN_STATUSES:
+        return False
+    observations = payload.get("price_observations", [])
+    if not observations:
+        raise ValueError("IMPORT_INCOMPLETE: no expected observations")
+    actual = read_observations(run_id, sorted(observations[0]), supabase_url, service_key, sender=sender)
+    verify_observations(payload, actual)
+    return True
 
 
 def build_dispatch_payload(
@@ -93,15 +100,20 @@ def build_dispatch_payload(
     run = json.loads(run_json)
     if not isinstance(run, Mapping):
         raise ValueError("Daily run metadata must be a JSON object")
-    text = snapshot.decode("utf-8-sig")
-    rows = list(csv.DictReader(io.StringIO(text, newline="")))
+    rows = list(csv.DictReader(io.StringIO(snapshot.decode("utf-8-sig"), newline="")))
     if not rows:
         raise ValueError("Daily snapshot contains no observations")
+    keys = [(row.get("model", "").strip(), row.get("retailer", "").strip()) for row in rows]
+    if any(not a or not b for a, b in keys) or len(set(keys)) != len(keys):
+        raise ValueError("Blank or duplicate snapshot observation key")
+    if "total_targets" in run and int(run["total_targets"]) != len(rows):
+        raise ValueError("Declared target count does not match snapshot")
     payload = merge_payloads(
         [build_daily_snapshot_payload(run, rows)],
         generated_at=generated_at,
     )
-    # Observation URLs are evidence, not new active crawl configuration.
+    # Snapshot URLs are evidence, not commands to replace the active crawl catalog.
+    # Preserve existing link rows on upload; new color URLs remain inactive.
     for link in payload["product_links"]:
         link["active"] = False
     return payload
@@ -122,17 +134,11 @@ def main() -> int:
     )
     supabase_url = os.environ.get("SUPABASE_URL", "")
     service_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
-    run = payload["crawl_runs"][0]
-    if is_terminal_run_uploaded(payload, supabase_url, service_key):
-        print(json.dumps({"status": "duplicate_noop", "run_key": run["run_key"]}, sort_keys=True))
-        return 0
-    counts = upsert_payload(payload, supabase_url, service_key, preserve_product_links=True)
-    print(json.dumps({
-        "status": "uploaded",
-        "run_key": run["run_key"],
-        "counts": counts,
-    }, sort_keys=True))
+    manifest = build_manifest(payload, inputs["snapshot_sha256"])
+    receipt = import_daily_atomically(payload, manifest, supabase_url, service_key)
+    print("DAILY_IMPORT_JSON=" + json.dumps(receipt, sort_keys=True))
     return 0
+
 
 
 if __name__ == "__main__":

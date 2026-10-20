@@ -1,4 +1,5 @@
 name: Import Local Daily Price Check
+run-name: Daily ${{ fromJSON(inputs.run_json).run_id }} ${{ inputs.snapshot_sha256 }}
 
 on:
   workflow_dispatch:
@@ -20,7 +21,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: import-daily-${{ inputs.snapshot_sha256 }}
+  group: import-daily-${{ fromJSON(inputs.run_json).run_id }}
   cancel-in-progress: false
 
 jobs:
