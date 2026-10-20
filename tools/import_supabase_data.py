@@ -364,7 +364,9 @@ def _daily_evidence(source: Mapping[str, object]) -> dict:
         "purchase_action",
         "purchase_action_method",
         "purchase_action_text",
-        "decision_note",
+        "decision_note", "availability_basis", "confirmed_at", "confirmed_by", "event_kind",
+        "confirmation_reason", "evidence_path", "evidence_sha256", "source_run_id",
+        "source_snapshot_sha256", "correction_id",
     )
     return {field: source[field] for field in fields if source.get(field) not in (None, "")}
 
