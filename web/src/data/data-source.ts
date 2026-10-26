@@ -54,6 +54,8 @@ export interface CorrectionAudit {
 }
 
 export interface DashboardFixture {
+  source?: 'fixture' | 'static-fallback'
+  schemaVersion?: number
   generatedAt: string
   effectiveRows: EffectivePriceRow[]
   health: HealthCheck[]
@@ -66,7 +68,7 @@ export interface DashboardFixture {
 }
 
 export interface DashboardSnapshot {
-  source: 'supabase' | 'fixture'
+  source: 'supabase' | 'static-fallback' | 'fixture'
   generatedAt: string
   weeklyRows: PriceRow[]
   dailyRows: PriceRow[]
@@ -80,19 +82,15 @@ export interface DashboardSnapshot {
   corrections: CorrectionAudit[]
 }
 
-export function preferNewestSnapshot(remote: DashboardSnapshot, saved: DashboardSnapshot): DashboardSnapshot {
-  const newestDate = (snapshot: DashboardSnapshot) => snapshot.dailyRows.reduce(
-    (latest, row) => row.date > latest ? row.date : latest, '',
-  )
-  const remoteDate = newestDate(remote)
-  const savedDate = newestDate(saved)
-  if (savedDate > remoteDate) return saved
-  if (savedDate === remoteDate && savedDate) {
-    const remoteRuns = new Set(remote.runs.filter((run) => run.completed_at?.slice(0, 10) === savedDate).map((run) => run.id))
-    const savedRuns = saved.runs.filter((run) => run.completed_at?.slice(0, 10) === savedDate).map((run) => run.id)
-    if (savedRuns.some((runId) => !remoteRuns.has(runId))) return saved
-  }
-  return remote
+const latestDailyDate = (snapshot: DashboardSnapshot): string =>
+  snapshot.dailyRows.reduce((latest, row) => row.date > latest ? row.date : latest, '')
+
+export function preferFreshSnapshot(
+  realtime: DashboardSnapshot,
+  fallback: DashboardSnapshot,
+): DashboardSnapshot {
+  if (fallback.source !== 'static-fallback') return realtime
+  return latestDailyDate(realtime) >= latestDailyDate(fallback) ? realtime : fallback
 }
 
 export async function loadDashboardData(
@@ -108,7 +106,7 @@ export async function loadDashboardData(
     fallbackWeekly,
   ))
   return {
-    source: 'fixture',
+    source: fixture.source ?? 'fixture',
     generatedAt: fixture.generatedAt,
     weeklyRows: deriveFridayWeeklyRows(dailyRows, fallbackWeekly),
     dailyRows,

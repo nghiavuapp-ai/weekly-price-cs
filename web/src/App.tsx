@@ -3,7 +3,8 @@ import type { Session } from '@supabase/supabase-js'
 
 import fixture from './data/fixture.json'
 import { insertCorrection, saveConfig, signInAdmin, type ConfigTable } from './data/admin-repository'
-import { loadDashboardData, preferNewestSnapshot, type DashboardFixture, type DashboardSnapshot } from './data/data-source'
+import { loadDashboardData, preferFreshSnapshot, type DashboardFixture, type DashboardSnapshot } from './data/data-source'
+import { fetchStaticFallback, mergeDashboardFixtures } from './data/static-fallback'
 import type { CorrectionPayload } from './domain/corrections'
 import type { Granularity } from './domain/price-data'
 import { downloadWorkbook } from './export/download'
@@ -13,22 +14,26 @@ import { AdminPanel } from './components/AdminPanel'
 import { Dashboard } from './components/Dashboard'
 
 const client = createConfiguredClient()
+const sourceFixture = fixture as DashboardFixture
+const fallbackUrl = import.meta.env.VITE_DAILY_FALLBACK_URL?.trim()
+  || 'https://raw.githubusercontent.com/nghiavuapp-ai/weekly-price-cs/main/web/public/data/daily-fallback.json'
 
 export default function App() {
   const [snapshot, setSnapshot] = useState<DashboardSnapshot | null>(null)
   const [error, setError] = useState('')
   const [adminOpen, setAdminOpen] = useState(false)
   const [session, setSession] = useState<Session | null>(null)
-  const sourceFixture = fixture as DashboardFixture
   const load = useCallback(async () => {
+    const overlay = await fetchStaticFallback(fallbackUrl)
+    const mergedFixture = mergeDashboardFixtures(sourceFixture, overlay)
+    const fallbackSnapshot = await loadDashboardData(null, mergedFixture)
     try {
-      const remote = await withFutureJwtRetry(() => loadDashboardData(client, sourceFixture))
-      const saved = await loadDashboardData(null, sourceFixture)
-      const selected = preferNewestSnapshot(remote, saved)
+      const realtime = await withFutureJwtRetry(() => loadDashboardData(client, mergedFixture))
+      const selected = preferFreshSnapshot(realtime, fallbackSnapshot)
       setSnapshot(selected)
-      setError(selected.source === 'fixture' ? 'Nguồn trực tuyến chưa đồng bộ đủ; đang hiển thị bản chốt đã lưu.' : '')
+      setError(selected.source === 'static-fallback' ? 'Nguồn realtime chưa đồng bộ tới ngày dữ liệu tĩnh mới nhất.' : '')
     }
-    catch { setError('Dữ liệu thời gian thực tạm gián đoạn; bảng đang hiển thị bản chốt đã lưu.'); setSnapshot(await loadDashboardData(null, sourceFixture)) }
+    catch (cause) { setError(cause instanceof Error ? cause.message : 'Không thể tải dữ liệu.'); setSnapshot(fallbackSnapshot) }
   }, [])
   useEffect(() => {
     void load()

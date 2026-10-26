@@ -59,4 +59,9 @@ describe('Dashboard', () => {
     expect(screen.queryByText('Cần chú ý')).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Tải Excel/i })).not.toBeInTheDocument()
   })
+
+  it('labels a static fallback with its latest Daily date', () => {
+    render(<Dashboard snapshot={{ ...snapshot, source: 'static-fallback' }} onOpenAdmin={vi.fn()} />)
+    expect(screen.getByText('Dữ liệu: Cập nhật tĩnh · 2026-09-10')).toBeInTheDocument()
+  })
 })

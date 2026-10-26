@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 import type { EffectivePriceRow } from '../domain/price-data'
-import { loadDashboardData, preferNewestSnapshot, type DashboardFixture } from './data-source'
+import { loadDashboardData, preferFreshSnapshot, type DashboardFixture } from './data-source'
 
 const row = (overrides: Partial<EffectivePriceRow> = {}): EffectivePriceRow => ({
   id: 'weekly', run_id: 'run-weekly', product_id: 'product-1', product_name: 'iPhone 17 128GB',
@@ -14,18 +14,13 @@ const row = (overrides: Partial<EffectivePriceRow> = {}): EffectivePriceRow => (
 })
 
 describe('dashboard data source', () => {
-  it('keeps a newer dated local snapshot until the remote import catches up', () => {
+  it('keeps a newer static snapshot until the realtime import catches up', () => {
     const base = { generatedAt: '', weeklyRows: [], pendingRows: [], health: [], runs: [], products: [], retailers: [], productLinks: [], priceOverrides: [], corrections: [] }
     const remote = { ...base, source: 'supabase' as const, dailyRows: [{ date: '2026-10-09' }] }
-    const local = { ...base, source: 'fixture' as const, dailyRows: [{ date: '2026-10-10' }] }
-    expect(preferNewestSnapshot(remote as never, local as never)).toBe(local)
-    expect(preferNewestSnapshot({ ...remote, dailyRows: [{ date: '2026-10-10' }] } as never, local as never).source).toBe('supabase')
-    const primary = { id: 'primary', completed_at: '2026-10-10T11:00:00+07:00' }
-    const retry = { id: 'retry', completed_at: '2026-10-10T15:00:00+07:00' }
-    const savedWithRetry = { ...local, runs: [primary, retry] }
-    const remotePrimaryOnly = { ...remote, dailyRows: [{ date: '2026-10-10' }], runs: [primary] }
-    expect(preferNewestSnapshot(remotePrimaryOnly as never, savedWithRetry as never)).toBe(savedWithRetry)
-    expect(preferNewestSnapshot({ ...remotePrimaryOnly, runs: [primary, retry] } as never, savedWithRetry as never).source).toBe('supabase')
+    const local = { ...base, source: 'static-fallback' as const, dailyRows: [{ date: '2026-10-10' }] }
+    expect(preferFreshSnapshot(remote as never, local as never)).toBe(local)
+    expect(preferFreshSnapshot({ ...remote, dailyRows: [{ date: '2026-10-10' }] } as never, local as never).source).toBe('supabase')
+    expect(preferFreshSnapshot(remote as never, { ...local, source: 'fixture' } as never)).toBe(remote)
   })
 
   it('uses the generated fixture without credentials and preserves pending failures separately from stale display rows', async () => {

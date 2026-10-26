@@ -40,6 +40,11 @@ export function Dashboard({ snapshot, onOpenAdmin }: DashboardProps) {
     ? selectWeeklyWindow(snapshot.weeklyRows.filter((row) => row.model === model && (partner === 'All' || row.partner === partner)), week)
     : selectDailyWeek(snapshot.dailyRows.filter((row) => row.model === model && (partner === 'All' || row.partner === partner)), date))
   const dailyWeeks = new Set(snapshot.dailyRows.map((row) => row.weekId).filter(Boolean) as string[])
+  const sourceLabel = snapshot.source === 'supabase'
+    ? 'Realtime'
+    : snapshot.source === 'static-fallback'
+      ? `Cập nhật tĩnh · ${dates.at(-1) ?? 'chưa có Daily'}`
+      : 'Bản chốt đã lưu'
   const selectGranularity = (next: Granularity) => {
     setGranularity(next)
     if (next === 'daily' && !date) setDate(dates.at(-1) ?? '')
@@ -65,6 +70,6 @@ export function Dashboard({ snapshot, onOpenAdmin }: DashboardProps) {
         <PartnerComparison rows={current} priorRows={prior} model={model} />
       </>}
     </div>
-    <footer><span>Dữ liệu: {snapshot.source === 'supabase' ? 'Realtime' : 'Bản chốt đã lưu'}</span><button className="quiet-admin" type="button" onClick={onOpenAdmin} aria-label="Mở công cụ sửa giá">Sửa giá</button></footer>
+    <footer><span>Dữ liệu: {sourceLabel}</span><button className="quiet-admin" type="button" onClick={onOpenAdmin} aria-label="Mở công cụ sửa giá">Sửa giá</button></footer>
   </main>
 }
