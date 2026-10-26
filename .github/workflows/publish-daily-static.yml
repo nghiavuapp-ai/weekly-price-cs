@@ -51,7 +51,7 @@ jobs:
           --output web/public/data/daily-fallback.json
       - name: Commit the generated public data only
         run: |
-          if git diff --quiet -- web/public/data/daily-fallback.json; then
+          if test -z "$(git status --porcelain -- web/public/data/daily-fallback.json)"; then
             echo "Static fallback already contains this exact run."
             exit 0
           fi

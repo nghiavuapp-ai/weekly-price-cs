@@ -66,6 +66,11 @@ class AutomationConfigTests(unittest.TestCase):
         self.assertIn('"buildCommand": "npm --prefix web ci && npm --prefix web run build"', config)
         self.assertIn('"api/retailer-fetch.js"', config)
 
+    def test_static_publish_commits_a_new_untracked_overlay(self):
+        workflow = (ROOT / ".github/workflows/publish-daily-static.yml").read_text(encoding="utf-8")
+        self.assertIn("git status --porcelain -- web/public/data/daily-fallback.json", workflow)
+        self.assertNotIn("git diff --quiet -- web/public/data/daily-fallback.json", workflow)
+
 
 if __name__ == "__main__":
     unittest.main()
