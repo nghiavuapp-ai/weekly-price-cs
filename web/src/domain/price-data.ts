@@ -197,7 +197,15 @@ export function selectDailyWeek(rows: PriceRow[], selectedDate: string): PriceRo
     .sort((left, right) => left.date.localeCompare(right.date) || left.partner.localeCompare(right.partner))
 }
 
-export function buildDailyTimeline(rows: PriceRow[]): PriceRow[] {
+export function buildDailyTimeline(
+  rows: PriceRow[],
+  runCompletionTimes: ReadonlyMap<string, string> = new Map(),
+): PriceRow[] {
+  // Confirmation time orders decisions; observedAt remains the original source clock.
+  const decisionTime = (row: PriceRow): string => row.correctedAt
+    || (row.sourceMethod === 'audited_correction' && row.confidence === 'USER_CONFIRMED'
+      ? runCompletionTimes.get(row.runId) : null)
+    || row.observedAt
   const dailyRows = rows.filter((row) => row.granularity === 'daily')
   const dates = [...new Set(dailyRows.map((row) => row.date))].sort()
   const latest = new Map<string, PriceRow>()
@@ -209,7 +217,8 @@ export function buildDailyTimeline(rows: PriceRow[]): PriceRow[] {
     for (const pair of pairs) {
       const successful = today
         .filter((row) => `${row.productId}:${row.retailerId}` === pair && row.fetchOk)
-        .sort((left, right) => right.observedAt.localeCompare(left.observedAt))[0]
+        .sort((left, right) => Date.parse(decisionTime(right)) - Date.parse(decisionTime(left))
+          || Number(right.sourceMethod === 'audited_correction') - Number(left.sourceMethod === 'audited_correction'))[0]
       if (successful) latest.set(pair, { ...successful, stale: false })
       const current = latest.get(pair)
       if (!current) continue

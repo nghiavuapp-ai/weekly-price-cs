@@ -104,7 +104,7 @@ export async function loadDashboardData(
   const dailyRows = buildDailyTimeline(assignDailyWeekIds(
     mapped.filter((row) => row.granularity === 'daily'),
     fallbackWeekly,
-  ))
+  ), new Map(fixture.runs.map((run) => [run.id, run.completed_at ?? ''])))
   return {
     source: fixture.source ?? 'fixture',
     generatedAt: fixture.generatedAt,
@@ -165,7 +165,8 @@ async function loadSupabaseData(client: SupabaseClient): Promise<DashboardSnapsh
   ])
   const mappedWeekly = weeklyEffective.map(mapEffectiveRow)
   const mappedDaily = dailyEffective.map(mapEffectiveRow)
-  const dailyRows = buildDailyTimeline(assignDailyWeekIds(mappedDaily, mappedWeekly))
+  const dailyRows = buildDailyTimeline(assignDailyWeekIds(mappedDaily, mappedWeekly),
+    new Map(runs.map((run) => [run.id, run.completed_at ?? ''])))
   return {
     source: 'supabase',
     generatedAt: new Date().toISOString(),
