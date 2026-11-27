@@ -213,6 +213,7 @@ export function buildDailyTimeline(
 
   for (const date of dates) {
     const today = dailyRows.filter((row) => row.date === date)
+    const weekId = today.find((row) => row.weekId)?.weekId ?? appleWeekIdForDate(date)
     const pairs = new Set([...latest.keys(), ...today.map((row) => `${row.productId}:${row.retailerId}`)])
     for (const pair of pairs) {
       const successful = today
@@ -227,6 +228,7 @@ export function buildDailyTimeline(
         ...current,
         date,
         periodKey: date,
+        weekId,
         stale: carried || current.observedDate !== date,
       })
     }

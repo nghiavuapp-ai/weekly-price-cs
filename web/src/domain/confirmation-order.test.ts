@@ -72,7 +72,8 @@ describe('source completeness before choosing realtime', () => {
     expect(selected.dailyRows.find(r => r.productId === known.product_id && r.date === '2026-11-27'))
       .toMatchObject({ priceVnd: price, stockStatus: price == null ? 'oos' : 'in_stock',
         observedAt: known.observed_at, stale: true })
-    expect(selected.weeklyRows.some(r => r.productId === known.product_id)).toBe(true)
+    const expectedWeek = selected.weeklyRows.find(r => r.productId === anchor.product_id)?.periodKey
+    expect(selected.weeklyRows.find(r => r.productId === known.product_id)?.periodKey).toBe(expectedWeek)
     // Once realtime contains the same known pair, it is eligible again.
     expect(preferFreshSnapshot({ ...fallback, source: 'supabase' }, fallback).source).toBe('supabase')
   })
