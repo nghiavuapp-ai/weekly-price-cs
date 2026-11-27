@@ -90,7 +90,14 @@ export function preferFreshSnapshot(
   fallback: DashboardSnapshot,
 ): DashboardSnapshot {
   if (fallback.source !== 'static-fallback') return realtime
-  return latestDailyDate(realtime) >= latestDailyDate(fallback) ? realtime : fallback
+  const realtimeDate = latestDailyDate(realtime)
+  const fallbackDate = latestDailyDate(fallback)
+  if (realtimeDate !== fallbackDate) return realtimeDate > fallbackDate ? realtime : fallback
+  // A matching date alone does not prove that confirmed/retained cells arrived.
+  const pairKey = (row: PriceRow) => `${row.productId}:${row.retailerId}`
+  const realtimePairs = new Set(realtime.dailyRows.filter(row => row.date === realtimeDate).map(pairKey))
+  const missingKnownPair = fallback.dailyRows.some(row => row.date === fallbackDate && !realtimePairs.has(pairKey(row)))
+  return missingKnownPair ? fallback : realtime
 }
 
 export async function loadDashboardData(

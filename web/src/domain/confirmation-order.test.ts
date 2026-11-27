@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { buildDailyTimeline, mapEffectiveRow, type EffectivePriceRow } from './price-data'
-import { loadDashboardData, type DashboardFixture } from '../data/data-source'
+import { loadDashboardData, preferFreshSnapshot, type DashboardFixture } from '../data/data-source'
 
 const observedAt = '2026-11-25T10:59:46+07:00'
 const source = (overrides: Partial<EffectivePriceRow> = {}): EffectivePriceRow => ({
@@ -49,5 +49,31 @@ describe('Daily confirmations preserve the source clock without losing precedenc
     }
     const result = await loadDashboardData(null, fixture)
     expect(result.dailyRows.at(-1)).toMatchObject({ id: 'confirmation', priceVnd: 45_490_000, observedAt })
+  })
+})
+
+// Synthetic regression matching the missing confirmed cells reported 27/11.
+describe('source completeness before choosing realtime', () => {
+  it.each([null, 47_490_000])('retains a known result when same-day realtime omits its pair: %s', async (price) => {
+    const base: DashboardFixture = { generatedAt: '', effectiveRows: [], health: [], runs: [],
+      products: [], retailers: [], productLinks: [], priceOverrides: [] }
+    const anchor = source({ id: 'anchor', product_id: 'other-product',
+      period_key: '2026-11-27', period_start: '2026-11-27', observed_at: '2026-11-27T11:00:00+07:00' })
+    const known = source({ id: 'known', period_key: '2026-11-18', period_start: '2026-11-18',
+      observed_at: '2026-11-18T11:00:00+07:00', effective_price_vnd: price,
+      effective_in_stock: price != null, source_method: 'audited_correction', confidence: 'USER_CONFIRMED' })
+    const failed = source({ id: 'failed', period_key: '2026-11-27', period_start: '2026-11-27',
+      fetch_ok: false, effective_in_stock: null })
+    const fallback = await loadDashboardData(null, { ...base, source: 'static-fallback', effectiveRows: [known, failed, anchor] })
+    const realtime = await loadDashboardData(null, { ...base, effectiveRows: [failed, anchor] })
+    realtime.source = 'supabase'
+    const selected = preferFreshSnapshot(realtime, fallback)
+    expect(selected.source).toBe('static-fallback')
+    expect(selected.dailyRows.find(r => r.productId === known.product_id && r.date === '2026-11-27'))
+      .toMatchObject({ priceVnd: price, stockStatus: price == null ? 'oos' : 'in_stock',
+        observedAt: known.observed_at, stale: true })
+    expect(selected.weeklyRows.some(r => r.productId === known.product_id)).toBe(true)
+    // Once realtime contains the same known pair, it is eligible again.
+    expect(preferFreshSnapshot({ ...fallback, source: 'supabase' }, fallback).source).toBe('supabase')
   })
 })
